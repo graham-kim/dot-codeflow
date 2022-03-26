@@ -28,7 +28,15 @@ def generate_input_files(filename_prefix: str):
 """
         )
 
+def print_translation_to_dot(filename_prefix: str):
+    print("digraph {")
+    print('    rankdir=TD')
+    print('    node [shape="box"]')
+    print("}")
+
 if __name__ == '__main__':
     args = setup_parser().parse_args()
     if args.gen_inputs:
         generate_input_files(args.filename_prefix)
+    else:
+        print_translation_to_dot(args.filename_prefix)
