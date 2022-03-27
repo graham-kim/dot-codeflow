@@ -20,9 +20,13 @@ class TestNodeParser(unittest.TestCase):
 
         self.assertEqual(2, len(self.parser.finished_classes), msg= \
             "Should have parsed correct number of classes")
+
         class0 = self.parser.finished_classes[0]
         self.assertEqual(2, len(class0.member_variables), msg= \
             "First class should have expected number of member variables")
+        self.assertEqual(2, len(class0.methods), msg= \
+            "First class should have expected number of methods")
+
         class1 = self.parser.finished_classes[1]
         self.assertEqual(3, len(class1.member_variables), msg= \
             "Second class should have expected number of member variables")

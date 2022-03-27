@@ -1,9 +1,11 @@
 import typing as tp
 from entities.dotClass import DotClass
+from entities.dotFunction import DotFunction
 
 class NodeParser:
     def __init__(self):
         self.current_class: DotClass = None
+        self.current_function: DotFunction = None
         self.finished_classes: tp.List[DotClass] = []
 
     def _finish_class(self) -> None:
@@ -49,6 +51,28 @@ class NodeParser:
         self.current_class.add_member_variable( \
             name=tokens[0].strip(), var_type=var_type, line_num=num, label=label)
 
+    def _parse_method(self, line: str) -> None:
+        original_line = line
+        label: str = None
+        if '|' in line:
+            label_tokens = line.split('|')
+            label = label_tokens[1].strip()
+            line = label_tokens[0].strip()
+
+        retval: str = None
+        if '@' in line:
+            ret_tokens = line.split('@')
+            retval = ret_tokens[1].strip()
+            line = ret_tokens[0].strip()
+
+        tokens = line[2:].split(' ')
+        if len(tokens) != 2:
+            raise Exception(f"Wrong number of tokens when parsing a member variable:\n{original_line}")
+
+        self.current_function = DotFunction( \
+            name=tokens[0].strip(), line_num=tokens[1].strip(), retval=retval, label=label)
+        self.current_class.add_method( self.current_function )
+
     def parse_file(self, filename: str) -> None:
         with open(filename, "r") as inF:
             for line in inF:
@@ -60,7 +84,7 @@ class NodeParser:
                     self._parse_member_variable(stripped_line)
                 elif stripped_line.startswith("- "):
                     self._check_current_class_exists(stripped_line)
-                    #self.current_class.add_method()
+                    self._parse_method(stripped_line)
                 elif stripped_line.startswith("$ "):
                     pass
                 else:
