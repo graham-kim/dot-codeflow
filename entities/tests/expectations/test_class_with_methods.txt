@@ -1,0 +1,14 @@
+    subgraph cluster_SomeActor {
+        label="class SomeActor\npath/to/actor.cc 146"
+
+        SomeActor_doSomething [shape="none" label=<
+        <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
+            <TR><TD PORT="call">Namespace::doSomething()<BR/>30</TD></TR>
+        </TABLE>>]
+
+        SomeActor_incrCount [shape="none" label=<
+        <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
+            <TR><TD PORT="call">incrCount()<BR/>31</TD></TR>
+            <TR><TD PORT="count">int count</TD></TR>
+        </TABLE>>]
+    }
