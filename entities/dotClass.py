@@ -1,4 +1,5 @@
 import typing as tp
+from entities.dotFunction import DotFunction
 
 class DotMemberVariable:
     def __init__(self, name: str, line_num: int=None, var_type: str=None, label: str=None):
@@ -23,9 +24,14 @@ class DotClass:
         self.filepath = filepath
         self.line_num = line_num
         self.member_variables: tp.List[DotMemberVariable] = []
+        self.methods: tp.List[DotFunction] = []
 
-    def add_member_variable(self, name: str, *args, **kwargs):
+    def add_member_variable(self, name: str, *args, **kwargs) -> None:
         self.member_variables.append(DotMemberVariable(f"{self.name}_{name}", *args, **kwargs))
+
+    def add_method(self, func: DotFunction) -> None:
+        func.name = f"{self.name}_{func.name}"
+        self.methods.append(func)
 
     def __str__(self) -> str:
         ans = "    subgraph cluster_" + self.name + " {\n"
@@ -39,6 +45,10 @@ f"""
             for mem in self.member_variables:
                 ans += str(mem)
             ans += "        </TABLE>>]\n"
+
+        if self.methods:
+            for f in self.methods:
+                ans += str(f)
 
         ans += "    }\n"
         return ans
