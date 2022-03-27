@@ -85,7 +85,9 @@ class NodeParser:
         with open(filename, "r") as inF:
             for line in inF:
                 stripped_line = line.strip('\n').strip()
-                if len(stripped_line) == 0 or stripped_line.startswith('#'):
+                if stripped_line.startswith('#'):
+                    continue
+                elif len(stripped_line) == 0:
                     self._finish_class()
                 elif stripped_line.startswith("_ "):
                     self._check_current_class_exists(stripped_line)

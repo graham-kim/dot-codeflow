@@ -45,7 +45,7 @@ class TestNodeParser(unittest.TestCase):
         self.assertTrue("Expected a class to parse this line under" in str(ex.exception), \
             msg=f"Exception message does not explain problem:\n  {ex.exception}")
 
-    def test_class_broken_by_comment(self) -> None:
+    def test_class_broken_by_blank_line(self) -> None:
         with self.assertRaises(Exception) as ex:
             self.parse_test_input()
         self.assertTrue("Expected a class to parse this line under" in str(ex.exception), \
