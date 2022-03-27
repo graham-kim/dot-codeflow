@@ -4,6 +4,7 @@ import inspect
 from pathlib import Path
 
 from entities.dotClass import DotClass
+from entities.dotFunction import DotFunction
 
 expectations_dir = Path("entities/tests/expectations/")
 
@@ -32,3 +33,12 @@ class TestDotClass(unittest.TestCase):
         d.add_member_variable("count", line_num=15, var_type="int")
         d.add_member_variable("name", 16, label="const char * name")
         self.check_expectations(d)
+
+    def test_class_with_methods(self) -> None:
+        c = DotClass("SomeActor", "path/to/actor.cc", 146)
+        f1 = DotFunction("doSomething", 30, "Namespace::doSomething()")
+        f2 = DotFunction("incrCount", 31)
+        f2.add_param("count", "int")
+        c.add_method(f1)
+        c.add_method(f2)
+        self.check_expectations(c)
