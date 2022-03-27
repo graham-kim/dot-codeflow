@@ -4,7 +4,7 @@ def setup_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser()
     parser.add_argument('filename_prefix', help= \
         "Prefix for input filenames")
-    parser.add_argument('--gen_inputs', action='store_true', help= \
+    parser.add_argument('--gen-inputs', action='store_true', help= \
         "Generate input files with the given prefix")
     return parser
 

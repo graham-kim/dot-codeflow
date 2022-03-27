@@ -23,16 +23,20 @@ class TestDotClass(unittest.TestCase):
         c = DotClass("SomeActor", "path/to/actor.cc", 146)
         self.check_expectations(c)
 
+        self.assertTrue(c.empty(), msg="DotClass should be empty with nothing added")
+
     def test_class_with_member_variables(self) -> None:
         c = DotClass("SomeActor", "path/to/actor.cc", 146)
-        c.add_member_variable("count", 15, "int")
-        c.add_member_variable("name", 16, "const char *")
+        c.add_member_variable("count", "int", 15)
+        c.add_member_variable("name", "const char *", 16)
         self.check_expectations(c)
         
         d = DotClass("SomeActor", "path/to/actor.cc", 146)
         d.add_member_variable("count", line_num=15, var_type="int")
-        d.add_member_variable("name", 16, label="const char * name")
+        d.add_member_variable("name", "std::string", 16, label="const char * name")
         self.check_expectations(d)
+
+        self.assertFalse(c.empty(), msg="DotClass should not be empty as something was added")
 
     def test_class_with_methods(self) -> None:
         c = DotClass("SomeActor", "path/to/actor.cc", 146)
@@ -42,3 +46,5 @@ class TestDotClass(unittest.TestCase):
         c.add_method(f1)
         c.add_method(f2)
         self.check_expectations(c)
+
+        self.assertFalse(c.empty(), msg="DotClass should not be empty as something was added")
