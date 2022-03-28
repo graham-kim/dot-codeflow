@@ -1,0 +1,15 @@
+# comment 1
+# comment 2
+
+SomeActor path/to/actor.cc 12
+- ctor 13
+# comment in the middle of a class is ok
+$ count int
+_ count int 17
+_ isValid bool | <B>important</B> isValid
+- incrCount 25
+
+GreatStruct path/to/some_struct.cc 15
+_ count int 17
+_ name str 18
+_ flag bool 19

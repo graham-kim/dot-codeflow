@@ -1,0 +1,6 @@
+SomeActor path/to/actor.cc 12
+- ctor 13
+_ count int 17
+$ count int
+_ isValid bool | <B>important</B> isValid
+- incrCount 25

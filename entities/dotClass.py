@@ -2,7 +2,7 @@ import typing as tp
 from entities.dotFunction import DotFunction
 
 class DotMemberVariable:
-    def __init__(self, name: str, line_num: int=None, var_type: str=None, label: str=None):
+    def __init__(self, name: str, var_type: str=None, line_num: int=None, label: str=None):
         self.name = name
         self.line_num = line_num
         if label:
@@ -32,6 +32,9 @@ class DotClass:
     def add_method(self, func: DotFunction) -> None:
         func.name = f"{self.name}_{func.name}"
         self.methods.append(func)
+
+    def empty(self) -> bool:
+        return len(self.member_variables) == 0 and len(self.methods) == 0
 
     def __str__(self) -> str:
         ans = "    subgraph cluster_" + self.name + " {\n"

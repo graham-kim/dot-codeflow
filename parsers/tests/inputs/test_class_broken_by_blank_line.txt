@@ -1,0 +1,8 @@
+SomeActor path/to/actor.cc 12
+- ctor 13
+$ count int
+
+# some comment which breaks the class continuity
+_ count int 17
+_ isValid bool | <B>important</B> isValid
+- incrCount 25

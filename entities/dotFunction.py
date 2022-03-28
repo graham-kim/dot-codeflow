@@ -15,13 +15,14 @@ class DotParam:
         return " "*12 + f'<TR><TD PORT="{self.name}">{self.label}</TD></TR>\n'
 
 class DotFunction:
-    def __init__(self, name: str, line_num: int=None, label: str=None):
+    def __init__(self, name: str, line_num: int=None, retval: str=None, label: str=None):
         self.name = name
         self.line_num = line_num
         if label:
             self.label = label
         else:
             self.label = name + "()"
+        self.retval = retval
         self.params: tp.List[DotParam] = []
 
     def add_param(self, name: str, var_type: str=None) -> None:
@@ -39,5 +40,7 @@ f"""
 """
         for p in self.params:
             ans += str(p)
+        if retval:
+            ans += f'            <TR><TD PORT="retval"><B>returns</B> {self.retval}</TD></TR>'
         ans += "        </TABLE>>]\n"
         return ans
