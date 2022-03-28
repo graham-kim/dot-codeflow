@@ -5,7 +5,7 @@ from pathlib import Path
 
 from parsers.node import NodeParser
 
-inputs_dir = Path("parsers/tests/inputs/")
+inputs_dir = Path("parsers/tests/inputs/node_parser/")
 
 class TestNodeParser(unittest.TestCase):
     def setUp(self):
