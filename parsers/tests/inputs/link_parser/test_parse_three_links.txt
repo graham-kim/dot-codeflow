@@ -1,0 +1,10 @@
+abc call
+def
+some label text
+
+def
+ghi
+style=dashed color=red | more label text
+
+ghi
+jkl call
