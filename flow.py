@@ -1,4 +1,11 @@
+import typing as tp
 import argparse
+
+from parsers.node import NodeParser
+from parsers.link import LinkParser
+
+from entities.dotClass import DotClass
+from entities.dotLink import DotLink
 
 def setup_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser()
@@ -28,15 +35,33 @@ def generate_input_files(filename_prefix: str):
 """
         )
 
-def print_translation_to_dot(filename_prefix: str):
-    print("digraph {")
-    print('    rankdir=TD')
-    print('    node [shape="box"]')
-    print("}")
+def parse_files(filename_prefix: str) -> tp.Tuple[NodeParser, LinkParser]:
+    node_p = NodeParser()
+    link_p = LinkParser()
+
+    node_p.parse_file(filename_prefix + node_file_suffix)
+    link_p.parse_file(filename_prefix + link_file_suffix)
+
+    return node_p, link_p
+
+def write_translation_to_dot(nodes: tp.List[DotClass], links: tp.List[DotLink]) -> str:
+    ans = \
+"""digraph {
+    rankdir=TD
+    node [shape="box"]
+"""
+    for node in nodes:
+        ans += f"\n{node}"
+    ans += "\n"
+    for link in links:
+        ans += str(link)
+    ans += "}"
+    return ans
 
 if __name__ == '__main__':
     args = setup_parser().parse_args()
     if args.gen_inputs:
         generate_input_files(args.filename_prefix)
     else:
-        print_translation_to_dot(args.filename_prefix)
+        node_p, link_p = parse_files(args.filename_prefix)
+        print(write_translation_to_dot(node_p.finished_classes, link_p.finished_links))

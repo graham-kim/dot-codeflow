@@ -40,7 +40,7 @@ f"""
 """
         for p in self.params:
             ans += str(p)
-        if retval:
+        if self.retval:
             ans += f'            <TR><TD PORT="retval"><B>returns</B> {self.retval}</TD></TR>'
         ans += "        </TABLE>>]\n"
         return ans
