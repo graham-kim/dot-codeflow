@@ -28,7 +28,7 @@ class DotClass:
         self.methods: tp.List[DotFunction] = []
 
     def add_member_variable(self, name: str, *args, **kwargs) -> None:
-        self.member_variables.append(DotMemberVariable(f"{self.name}_{name}", *args, **kwargs))
+        self.member_variables.append(DotMemberVariable(name, *args, **kwargs))
 
     def add_method(self, func: DotFunction) -> None:
         func.name = f"{self.name}_{func.name}"
