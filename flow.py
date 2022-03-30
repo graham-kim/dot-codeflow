@@ -21,17 +21,24 @@ link_file_suffix = "_links.txt"
 def generate_input_files(filename_prefix: str):
     with open(filename_prefix + node_file_suffix, 'w') as outF:
         outF.write(
-"""
-# comment 1
-# comment 2
+"""# Example:
+# School path/to/school.cc 15
+# - ctor 16 | constructor
+# _ name std::string
+# _ students std::list<Person>
+# - enrol_student 18 @ void
+# $ student Person
+# - is_student 20 @ bool
+# $ name std::string
 """
         )
 
     with open(filename_prefix + link_file_suffix, 'w') as outF:
         outF.write(
-"""
-# comment 1
-# comment 2
+"""# Example:
+# Person_mem_var name
+# School_is_student name
+# 132.cc
 """
         )
 
