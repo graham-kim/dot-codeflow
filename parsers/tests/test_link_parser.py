@@ -24,3 +24,9 @@ class TestLinkParser(unittest.TestCase):
             "First link should have put : in the src")
         self.assertEqual("more label text", self.parser.finished_links[1].label, msg= \
             "Second link should have separated the label from the tags")
+
+    def test_incomplete_link(self) -> None:
+        with self.assertRaises(Exception) as ex:
+            self.parse_test_input()
+        self.assertTrue("Incomplete link detected" in str(ex.exception), msg= \
+            "Exception message does not describe problem")
