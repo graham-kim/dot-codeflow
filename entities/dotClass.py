@@ -21,7 +21,8 @@ class DotMemberVariable:
 
 class DotClass:
     def __init__(self, name: str, filepath: str, line_num: int):
-        self.name = name
+        self.class_label = name
+        self.name = name.replace(':', '_')
         self.filepath = filepath
         self.line_num = line_num
         self.member_variables: tp.List[DotMemberVariable] = []
@@ -39,7 +40,7 @@ class DotClass:
 
     def __str__(self) -> str:
         ans = "    subgraph cluster_" + self.name + " {\n"
-        ans += f'        label="class {self.name}\\n{self.filepath} {self.line_num}"\n'
+        ans += f'        label="class {self.class_label}\\n{self.filepath} {self.line_num}"\n'
         if self.member_variables:
             ans += \
 f"""

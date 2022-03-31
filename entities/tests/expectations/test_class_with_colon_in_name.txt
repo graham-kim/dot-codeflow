@@ -1,0 +1,14 @@
+    subgraph cluster_Entity__SomeActor {
+        label="class Entity::SomeActor\npath/to/actor.cc 146"
+
+        Entity__SomeActor_mem_var [shape="cylinder" label=<
+        <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
+            <TR><TD PORT="count">int count<BR/>15</TD></TR>
+        </TABLE>>]
+
+        Entity__SomeActor_doSomething [shape="none" label=<
+        <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
+            <TR><TD PORT="call">doSomething()<BR/>30</TD></TR>
+            <TR><TD PORT="retval"><B>returns</B> Namespace::doSomething()</TD></TR>
+        </TABLE>>]
+    }
