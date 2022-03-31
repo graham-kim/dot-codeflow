@@ -30,6 +30,7 @@ def generate_input_files(filename_prefix: str):
 # $ student Person
 # - is_student 20 @ bool
 # $ name std::string
+
 """
         )
 
@@ -39,6 +40,7 @@ def generate_input_files(filename_prefix: str):
 # Person_mem_var name
 # School_is_student name
 # 132.cc
+
 """
         )
 

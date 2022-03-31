@@ -47,6 +47,6 @@ f"""
             ans += str(p)
         if self.retval:
             escaped_retval = escape_angular_brackets(self.retval)
-            ans += f'            <TR><TD PORT="retval"><B>returns</B> {escaped_retval}</TD></TR>'
+            ans += f'            <TR><TD PORT="retval"><B>returns</B> {escaped_retval}</TD></TR>\n'
         ans += "        </TABLE>>]\n"
         return ans
