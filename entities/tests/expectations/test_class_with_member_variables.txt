@@ -3,7 +3,7 @@
 
         SomeActor_mem_var [shape="cylinder" label=<
         <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
-            <TR><TD PORT="SomeActor_count">int SomeActor_count<BR/>15</TD></TR>
-            <TR><TD PORT="SomeActor_name">const char * SomeActor_name<BR/>16</TD></TR>
+            <TR><TD PORT="count">int count<BR/>15</TD></TR>
+            <TR><TD PORT="name">const char * name<BR/>16</TD></TR>
         </TABLE>>]
     }

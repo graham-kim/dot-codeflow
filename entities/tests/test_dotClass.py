@@ -12,7 +12,7 @@ class TestDotClass(unittest.TestCase):
     def check_expectations(self, c: DotClass) -> None:
         caller_name = inspect.stack()[1].function
         with open(expectations_dir / f'{caller_name}.txt', 'r') as expF:
-            self.assertTrue(str(c), expF.read())
+            self.assertEqual(str(c), expF.read())
 
     def update_expectations(self, c: DotClass) -> None:
         caller_name = inspect.stack()[1].function
