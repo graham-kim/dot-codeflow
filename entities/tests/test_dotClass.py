@@ -49,6 +49,12 @@ class TestDotClass(unittest.TestCase):
 
         self.assertFalse(c.empty(), msg="DotClass should not be empty as something was added")
 
+    def test_class_with_method_needing_escapes(self) -> None:
+        c = DotClass("SomeActor", "path/to/actor.cc", 146)
+        f1 = DotFunction("doSomething", 30, "Namespace::[[B]]do[[/B]]Something<B>()")
+        c.add_method(f1)
+        self.update_expectations(c)
+
     def test_class_with_colon_in_name(self) -> None:
         c = DotClass("Entity::SomeActor", "path/to/actor.cc", 146)
         c.add_member_variable("count", "int", 15)

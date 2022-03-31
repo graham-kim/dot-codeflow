@@ -1,5 +1,5 @@
 import typing as tp
-from entities.dotFunction import DotFunction, escape_angular_brackets
+from entities.dotFunction import DotFunction, substitute_angular_brackets_after_escaping
 
 class DotMemberVariable:
     def __init__(self, name: str, var_type: str=None, line_num: int=None, label: str=None):
@@ -16,7 +16,7 @@ class DotMemberVariable:
     def __str__(self) -> str:
         line_num_str = f"<BR/>{self.line_num}" if self.line_num \
                        else ""
-        escaped_label = escape_angular_brackets(self.label)
+        escaped_label = substitute_angular_brackets_after_escaping(self.label)
         return " "*12 + f'<TR><TD PORT="{self.name}">{escaped_label}{line_num_str}</TD></TR>\n'
 
 class DotClass:
