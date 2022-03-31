@@ -1,5 +1,8 @@
 import typing as tp
 
+def escape_angular_brackets(label: str) -> str:
+    return label.replace('<', '&lt;').replace('>', '&gt;')
+
 class DotParam:
     def __init__(self, name: str, var_type: str=None, label: str=None):
         self.name = name
@@ -12,7 +15,8 @@ class DotParam:
                 self.label = name
 
     def __str__(self) -> str:
-        return " "*12 + f'<TR><TD PORT="{self.name}">{self.label}</TD></TR>\n'
+        escaped_label = escape_angular_brackets(self.label)
+        return " "*12 + f'<TR><TD PORT="{self.name}">{escaped_label}</TD></TR>\n'
 
 class DotFunction:
     def __init__(self, name: str, line_num: int=None, retval: str=None, label: str=None):
@@ -32,15 +36,17 @@ class DotFunction:
     def __str__(self) -> str:
         line_num_str = f"<BR/>{self.line_num}" if self.line_num \
                        else ""
+        escaped_label = escape_angular_brackets(self.label)
         ans = \
 f"""
         {self.name} [shape="none" label=<
         <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
-            <TR><TD PORT="call">{self.label}{line_num_str}</TD></TR>
+            <TR><TD PORT="call">{escaped_label}{line_num_str}</TD></TR>
 """
         for p in self.params:
             ans += str(p)
-        if retval:
-            ans += f'            <TR><TD PORT="retval"><B>returns</B> {self.retval}</TD></TR>'
+        if self.retval:
+            escaped_retval = escape_angular_brackets(self.retval)
+            ans += f'            <TR><TD PORT="retval"><B>returns</B> {escaped_retval}</TD></TR>\n'
         ans += "        </TABLE>>]\n"
         return ans

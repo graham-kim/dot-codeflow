@@ -13,10 +13,11 @@ class LinkParser:
         self.label: str = None
 
     def _finish_link(self, line_num: tp.Union[int, str]):
-        if self.src is None or self.dst is None:
-            raise Exception(f"Incomplete link detected at {line_num}")
-        self.finished_links.append( DotLink(self.src, self.dst, tags=self.tags, label=self.label) )
-        self._reset_link()
+        if self.src is not None:
+            if self.dst is None:
+                raise Exception(f"Incomplete link detected at {line_num}")
+            self.finished_links.append( DotLink(self.src, self.dst, tags=self.tags, label=self.label) )
+            self._reset_link()
 
     def _parse_tags_and_label(self, line: str) -> None:
         if not '|' in line:

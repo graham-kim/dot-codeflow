@@ -16,4 +16,4 @@ class DotLink:
         elif self.label:
             ans += f' [label="{self.label}"]'
 
-        return ans
+        return f"{ans}\n"
