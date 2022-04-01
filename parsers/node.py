@@ -18,6 +18,10 @@ class NodeParser:
         if self.current_class is None:
             raise Exception(f"Expected a class to parse this line under:\n{line}")
 
+    def _check_current_function_exists(self, line: str) -> None:
+        if self.current_function is None:
+            raise Exception(f"Expected a function to parse this line under:\n{line}")
+
     def _start_class(self, line: str) -> None:
         tokens = line.split(' ')
         if len(tokens) < 2 or len(tokens) > 3:
@@ -81,6 +85,13 @@ class NodeParser:
 
         self.current_function.add_param(name=tokens[0].strip(), var_type=tokens[1].strip())
 
+    def _parse_local_var(self, line: str) -> None:
+        tokens = line[2:].split(' ')
+        if len(tokens) != 2:
+            raise Exception(f"Wrong number of tokens when parsing a member variable:\n{line}")
+
+        self.current_function.add_local_var(name=tokens[0].strip(), var_type=tokens[1].strip())
+
     def parse_file(self, filename: str) -> None:
         with open(filename, "r") as inF:
             for line in inF:
@@ -97,9 +108,11 @@ class NodeParser:
                     self._check_current_class_exists(stripped_line)
                     self._parse_method(stripped_line)
                 elif stripped_line.startswith("$ "):
-                    if self.current_function is None:
-                        raise Exception(f"Expected a function to parse this line under:\n{stripped_line}")
+                    self._check_current_function_exists(stripped_line)
                     self._parse_param(stripped_line)
+                elif stripped_line.startswith("& "):
+                    self._check_current_function_exists(stripped_line)
+                    self._parse_local_var(stripped_line)
                 else:
                     self._finish_class()
                     self._start_class(stripped_line)

@@ -50,3 +50,19 @@ class TestNodeParser(unittest.TestCase):
             self.parse_test_input()
         self.assertTrue("Expected a class to parse this line under" in str(ex.exception), \
             msg=f"Exception message does not explain problem:\n  {ex.exception}")
+
+    def test_parse_method_with_details(self) -> None:
+        self.parse_test_input()
+
+        self.assertEqual(1, len(self.parser.finished_classes), msg= \
+            "Should have parsed correct number of classes")
+
+        class0 = self.parser.finished_classes[0]
+        self.assertEqual(1, len(class0.methods), msg= \
+            "First class should have expected number of methods")
+
+        method0 = class0.methods[0]
+        self.assertEqual(2, len(method0.params), msg= \
+            "First method of first class should have expected number of params")
+        self.assertEqual(1, len(method0.localvars), msg= \
+            "First method of first class should have expected number of local variables")
