@@ -1,0 +1,11 @@
+    subgraph cluster_SomeActor {
+        label="class SomeActor\npath/to/actor.cc 146"
+
+        SomeActor_doSomething [shape="none" label=<
+        <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
+            <TR><TD PORT="call">Namespace::<B>do</B>Something<BR/>&lt;B&gt;()<BR/>30</TD></TR>
+            <TR><TD PORT="count">int count</TD></TR>
+            <TR><TD PORT="while"><U>loop</U> while 34</TD></TR>
+            <TR><TD PORT="retval"><B>returns</B> bool</TD></TR>
+        </TABLE>>]
+    }

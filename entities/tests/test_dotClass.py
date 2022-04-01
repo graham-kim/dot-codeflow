@@ -69,3 +69,11 @@ class TestDotClass(unittest.TestCase):
         f.add_local_var("sum", "int")
         c.add_method(f)
         self.check_expectations(c)
+
+    def test_class_with_method_having_loop(self) -> None:
+        c = DotClass("SomeActor", "path/to/actor.cc", 146)
+        f = DotFunction("doSomething", 30, retval="bool", label="Namespace::[[B]]do[[/B]]Something\\n<B>()")
+        f.add_param("count", "int")
+        f.add_loop("while", 34)
+        c.add_method(f)
+        self.check_expectations(c)
