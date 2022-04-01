@@ -3,3 +3,4 @@ SomeActor path/to/actor.cc 12
 $ count int
 $ verbose bool
 & sum int
+( while_not_exiting 15

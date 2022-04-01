@@ -66,3 +66,5 @@ class TestNodeParser(unittest.TestCase):
             "First method of first class should have expected number of params")
         self.assertEqual(1, len(method0.localvars), msg= \
             "First method of first class should have expected number of local variables")
+        self.assertEqual(1, len(method0.loops), msg= \
+            "First method of first class should have expected number of loops")
