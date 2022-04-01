@@ -1,0 +1,5 @@
+SomeActor path/to/actor.cc 12
+- ctor 13
+$ count int
+$ verbose bool
+& sum int

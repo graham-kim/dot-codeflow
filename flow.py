@@ -30,6 +30,7 @@ def generate_input_files(filename_prefix: str):
 # $ student Person
 # - is_student 20 @ bool
 # $ name std::string
+# & temp_var bool
 
 """
         )
