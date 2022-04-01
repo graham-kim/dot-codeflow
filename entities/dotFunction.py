@@ -22,6 +22,11 @@ class DotParam:
         escaped_label = substitute_angular_brackets_after_escaping(self.label)
         return " "*12 + f'<TR><TD PORT="{self.name}">{escaped_label}</TD></TR>\n'
 
+class DotLocalVar(DotParam):
+    def __str__(self) -> str:
+        escaped_label = substitute_angular_brackets_after_escaping(self.label)
+        return " "*12 + f'<TR><TD PORT="{self.name}"><B>local</B> {escaped_label}</TD></TR>\n'
+
 class DotFunction:
     def __init__(self, name: str, line_num: int=None, retval: str=None, label: str=None):
         self.name = name
@@ -32,10 +37,15 @@ class DotFunction:
             self.label = name + "()"
         self.retval = retval
         self.params: tp.List[DotParam] = []
+        self.localvars: tp.List[DotLocalVar] = []
 
     def add_param(self, name: str, var_type: str=None) -> None:
         label = f"{var_type} {name}" if var_type else "name"
         self.params.append( DotParam(name, label=label) )
+
+    def add_local_var(self, name: str, var_type: str=None) -> None:
+        label = f"{var_type} {name}" if var_type else "name"
+        self.localvars.append( DotLocalVar(name, label=label) )
 
     def __str__(self) -> str:
         line_num_str = f"<BR/>{self.line_num}" if self.line_num \
@@ -49,6 +59,8 @@ f"""
 """
         for p in self.params:
             ans += str(p)
+        for v in self.localvars:
+            ans += str(v)
         if self.retval:
             escaped_retval = substitute_angular_brackets_after_escaping(self.retval)
             ans += f'            <TR><TD PORT="retval"><B>returns</B> {escaped_retval}</TD></TR>\n'
