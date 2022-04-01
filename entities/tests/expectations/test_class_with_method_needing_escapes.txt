@@ -4,6 +4,6 @@
         SomeActor_doSomething [shape="none" label=<
         <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
             <TR><TD PORT="call">doSomething()<BR/>30</TD></TR>
-            <TR><TD PORT="retval"><B>returns</B> Namespace::<B>do</B>Something&lt;B&gt;()</TD></TR>
+            <TR><TD PORT="retval"><B>returns</B> Namespace::<B>do</B>Something<BR/>&lt;B&gt;()</TD></TR>
         </TABLE>>]
     }

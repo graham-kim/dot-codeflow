@@ -51,9 +51,9 @@ class TestDotClass(unittest.TestCase):
 
     def test_class_with_method_needing_escapes(self) -> None:
         c = DotClass("SomeActor", "path/to/actor.cc", 146)
-        f1 = DotFunction("doSomething", 30, "Namespace::[[B]]do[[/B]]Something<B>()")
+        f1 = DotFunction("doSomething", 30, "Namespace::[[B]]do[[/B]]Something\\n<B>()")
         c.add_method(f1)
-        self.update_expectations(c)
+        self.check_expectations(c)
 
     def test_class_with_colon_in_name(self) -> None:
         c = DotClass("Entity::SomeActor", "path/to/actor.cc", 146)

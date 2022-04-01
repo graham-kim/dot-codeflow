@@ -5,7 +5,7 @@ def escape_angular_brackets(label: str) -> str:
 
 def substitute_angular_brackets_after_escaping(label: str) -> str:
     return escape_angular_brackets(label)\
-            .replace('[[', '<').replace(']]', '>')
+            .replace('[[', '<').replace(']]', '>').replace('\\n', '<BR/>')
 
 class DotParam:
     def __init__(self, name: str, var_type: str=None, label: str=None):
