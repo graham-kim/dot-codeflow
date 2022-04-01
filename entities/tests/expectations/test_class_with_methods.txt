@@ -3,8 +3,7 @@
 
         SomeActor_doSomething [shape="none" label=<
         <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
-            <TR><TD PORT="call">doSomething()<BR/>30</TD></TR>
-            <TR><TD PORT="retval"><B>returns</B> Namespace::doSomething()</TD></TR>
+            <TR><TD PORT="call">Namespace::doSomething()<BR/>30</TD></TR>
         </TABLE>>]
 
         SomeActor_incrCount [shape="none" label=<

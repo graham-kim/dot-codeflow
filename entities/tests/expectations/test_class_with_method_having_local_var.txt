@@ -3,9 +3,8 @@
 
         SomeActor_doSomething [shape="none" label=<
         <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
-            <TR><TD PORT="call">doSomething()<BR/>30</TD></TR>
+            <TR><TD PORT="call">Namespace::<B>do</B>Something<BR/>&lt;B&gt;()<BR/>30</TD></TR>
             <TR><TD PORT="count">int count</TD></TR>
             <TR><TD PORT="sum"><B>local</B> int sum</TD></TR>
-            <TR><TD PORT="retval"><B>returns</B> Namespace::<B>do</B>Something<BR/>&lt;B&gt;()</TD></TR>
         </TABLE>>]
     }

@@ -40,7 +40,7 @@ class TestDotClass(unittest.TestCase):
 
     def test_class_with_methods(self) -> None:
         c = DotClass("SomeActor", "path/to/actor.cc", 146)
-        f1 = DotFunction("doSomething", 30, "Namespace::doSomething()")
+        f1 = DotFunction("doSomething", 30, label="Namespace::doSomething()")
         f2 = DotFunction("incrCount", 31)
         f2.add_param("count", "int")
         c.add_method(f1)
@@ -51,20 +51,20 @@ class TestDotClass(unittest.TestCase):
 
     def test_class_with_method_needing_escapes(self) -> None:
         c = DotClass("SomeActor", "path/to/actor.cc", 146)
-        f1 = DotFunction("doSomething", 30, "Namespace::[[B]]do[[/B]]Something\\n<B>()")
+        f1 = DotFunction("doSomething", 30, label="Namespace::[[B]]do[[/B]]Something\\n<B>()")
         c.add_method(f1)
         self.check_expectations(c)
 
     def test_class_with_colon_in_name(self) -> None:
         c = DotClass("Entity::SomeActor", "path/to/actor.cc", 146)
         c.add_member_variable("count", "int", 15)
-        f = DotFunction("doSomething", 30, "Namespace::doSomething()")
+        f = DotFunction("doSomething", 30, label="Namespace::doSomething()")
         c.add_method(f)
         self.check_expectations(c)
 
     def test_class_with_method_having_local_var(self) -> None:
         c = DotClass("SomeActor", "path/to/actor.cc", 146)
-        f = DotFunction("doSomething", 30, "Namespace::[[B]]do[[/B]]Something\\n<B>()")
+        f = DotFunction("doSomething", 30, label="Namespace::[[B]]do[[/B]]Something\\n<B>()")
         f.add_param("count", "int")
         f.add_local_var("sum", "int")
         c.add_method(f)
