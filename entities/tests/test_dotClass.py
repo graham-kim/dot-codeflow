@@ -12,7 +12,7 @@ class TestDotClass(unittest.TestCase):
     def check_expectations(self, c: DotClass) -> None:
         caller_name = inspect.stack()[1].function
         with open(expectations_dir / f'{caller_name}.txt', 'r') as expF:
-            self.assertTrue(str(c), expF.read())
+            self.assertEqual(str(c), expF.read())
 
     def update_expectations(self, c: DotClass) -> None:
         caller_name = inspect.stack()[1].function
@@ -48,3 +48,16 @@ class TestDotClass(unittest.TestCase):
         self.check_expectations(c)
 
         self.assertFalse(c.empty(), msg="DotClass should not be empty as something was added")
+
+    def test_class_with_method_needing_escapes(self) -> None:
+        c = DotClass("SomeActor", "path/to/actor.cc", 146)
+        f1 = DotFunction("doSomething", 30, "Namespace::[[B]]do[[/B]]Something\\n<B>()")
+        c.add_method(f1)
+        self.check_expectations(c)
+
+    def test_class_with_colon_in_name(self) -> None:
+        c = DotClass("Entity::SomeActor", "path/to/actor.cc", 146)
+        c.add_member_variable("count", "int", 15)
+        f = DotFunction("doSomething", 30, "Namespace::doSomething()")
+        c.add_method(f)
+        self.check_expectations(c)

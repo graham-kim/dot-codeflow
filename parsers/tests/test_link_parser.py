@@ -30,3 +30,11 @@ class TestLinkParser(unittest.TestCase):
             self.parse_test_input()
         self.assertTrue("Incomplete link detected" in str(ex.exception), msg= \
             "Exception message does not describe problem")
+
+    def test_parse_colon_in_link(self) -> None:
+        self.parse_test_input()
+
+        self.assertEqual(1, len(self.parser.finished_links), msg= \
+            "Should have parsed expected number of links")
+        self.assertEqual("abc__vda:call", self.parser.finished_links[0].src, msg= \
+            "First link should have replaced : for _ and then put : for the port in the src")

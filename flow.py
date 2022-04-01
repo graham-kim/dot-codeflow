@@ -23,7 +23,7 @@ def generate_input_files(filename_prefix: str):
         outF.write(
 """# Example:
 # School path/to/school.cc 15
-# - ctor 16 | constructor
+# - ctor 16 | [[B]]cons[[/B]]tructor\\n<B>
 # _ name std::string
 # _ students std::list<Person>
 # - enrol_student 18 @ void

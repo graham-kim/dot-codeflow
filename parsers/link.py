@@ -29,10 +29,11 @@ class LinkParser:
             self.tags = tokens[0].strip()
 
     def parse_file(self, filename: str) -> None:
-        def parse_optional_port(line):
+        def parse_src_or_dst(line):
             tokens = line.split(' ')
             if len(tokens) > 2:
                 raise Exception(f"Too many spaces in line while specifying src or dst:\n{line}")
+            tokens[0] = tokens[0].replace(':', '_')
             return ':'.join(tokens)
 
         with open(filename, "r") as inF:
@@ -44,9 +45,9 @@ class LinkParser:
                     self._finish_link(i)
                 else:
                     if self.src is None:
-                        self.src = parse_optional_port(stripped_line)
+                        self.src = parse_src_or_dst(stripped_line)
                     elif self.dst is None:
-                        self.dst = parse_optional_port(stripped_line)
+                        self.dst = parse_src_or_dst(stripped_line)
                     elif self.label is None:
                         self._parse_tags_and_label(stripped_line)
                     else:
