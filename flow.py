@@ -5,6 +5,7 @@ from parsers.node import NodeParser
 from parsers.link import LinkParser
 
 from entities.dotClass import DotClass
+from entities.dotFunction import DotFunction
 from entities.dotLink import DotLink
 
 def setup_parser() -> argparse.ArgumentParser:
@@ -55,7 +56,8 @@ def parse_files(filename_prefix: str) -> tp.Tuple[NodeParser, LinkParser]:
 
     return node_p, link_p
 
-def write_translation_to_dot(nodes: tp.List[DotClass], links: tp.List[DotLink]) -> str:
+def write_translation_to_dot(nodes: tp.List[tp.Union[DotClass, DotFunction]], \
+                             links: tp.List[DotLink]) -> str:
     ans = \
 """digraph {
     rankdir=TD
@@ -75,4 +77,5 @@ if __name__ == '__main__':
         generate_input_files(args.filename_prefix)
     else:
         node_p, link_p = parse_files(args.filename_prefix)
-        print(write_translation_to_dot(node_p.finished_classes, link_p.finished_links))
+        nodes = node_p.finished_classes + node_p.standalone_functions
+        print(write_translation_to_dot(nodes, link_p.finished_links))
