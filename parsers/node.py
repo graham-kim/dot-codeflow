@@ -108,6 +108,16 @@ class NodeParser:
 
         self.current_function.add_loop(name=tokens[0].strip(), line_num=tokens[1].strip())
 
+    def _parse_tags_for_function_or_class(self, line: str) -> None:
+        tags = line[2:].strip()
+        if self.current_function is not None:
+            self.current_function.tags = tags
+        else:
+            if self.current_class is not None:
+                self.current_class.tags = tags
+            else:
+                raise Exception(f"Expected a class or function to parse this line under:\n{line}")
+
     def parse_file(self, filename: str) -> None:
         with open(filename, "r") as inF:
             for line in inF:
@@ -131,6 +141,8 @@ class NodeParser:
                 elif stripped_line.startswith("( "):
                     self._check_current_function_exists(stripped_line)
                     self._parse_loop(stripped_line)
+                elif stripped_line.startswith("= "):
+                    self._parse_tags_for_function_or_class(stripped_line)
                 else:
                     self._finish_class()
                     self._start_class(stripped_line)
