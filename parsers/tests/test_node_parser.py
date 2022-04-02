@@ -40,10 +40,11 @@ class TestNodeParser(unittest.TestCase):
             msg=f"Exception message does not explain problem:\n  {ex.exception}")
 
     def test_method_without_class(self) -> None:
-        with self.assertRaises(Exception) as ex:
-            self.parse_test_input()
-        self.assertTrue("Expected a class to parse this line under" in str(ex.exception), \
-            msg=f"Exception message does not explain problem:\n  {ex.exception}")
+        self.parse_test_input()
+        self.assertEqual(0, len(self.parser.finished_classes), msg= \
+            "Should have parsed correct number of classes")
+        self.assertEqual(1, len(self.parser.standalone_functions), msg= \
+            "Should have parsed expected number of standalone functions")
 
     def test_class_broken_by_blank_line(self) -> None:
         with self.assertRaises(Exception) as ex:

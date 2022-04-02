@@ -7,6 +7,7 @@ class NodeParser:
         self.current_class: DotClass = None
         self.current_function: DotFunction = None
         self.finished_classes: tp.List[DotClass] = []
+        self.standalone_functions: tp.List[DotFunction] = []
 
     def _finish_class(self) -> None:
         if self.current_class and not self.current_class.empty():
@@ -71,12 +72,20 @@ class NodeParser:
             line = ret_tokens[0].strip()
 
         tokens = line[2:].split(' ')
-        if len(tokens) != 2:
+        if len(tokens) < 2 or len(tokens) > 3:
             raise Exception(f"Wrong number of tokens when parsing a member variable:\n{original_line}")
 
+        name = tokens[0].strip()
+        if not label and len(tokens) == 3:
+            src_filename = tokens[1].strip()
+            if src_filename:
+                label = f"{name}()\\n{src_filename}"
         self.current_function = DotFunction( \
-            name=tokens[0].strip(), line_num=tokens[1].strip(), retval=retval, label=label)
-        self.current_class.add_method( self.current_function )
+            name=name, line_num=tokens[-1].strip(), retval=retval, label=label)
+        if self.current_class is not None:
+            self.current_class.add_method( self.current_function )
+        else:
+            self.standalone_functions.append( self.current_function )
 
     def _parse_param(self, line: str) -> None:
         tokens = line[2:].split(' ')
@@ -112,7 +121,6 @@ class NodeParser:
                     self._parse_member_variable(stripped_line)
                     self.current_function = None
                 elif stripped_line.startswith("- "):
-                    self._check_current_class_exists(stripped_line)
                     self._parse_method(stripped_line)
                 elif stripped_line.startswith("$ "):
                     self._check_current_function_exists(stripped_line)
