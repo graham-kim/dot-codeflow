@@ -24,6 +24,7 @@ def generate_input_files(filename_prefix: str):
         outF.write(
 """# Example:
 # School path/to/school.cc 15
+# = bgcolor="green"
 # - ctor 16 | [[B]]cons[[/B]]tructor\\n<B>
 # _ name std::string
 # _ students std::list<Person>
@@ -33,6 +34,10 @@ def generate_input_files(filename_prefix: str):
 # $ name std::string
 # & temp_var bool
 # ( while_not_exiting 24
+#
+# - ask_db path/to/school.cc 40
+# & db_name std::string
+# = fillcolor="black" color="white" fontcolor="yellow"
 
 """
         )
@@ -42,7 +47,7 @@ def generate_input_files(filename_prefix: str):
 """# Example:
 # Person_mem_var name
 # School_is_student name
-# 132.cc
+# color=red | 132
 
 """
         )
@@ -61,7 +66,7 @@ def write_translation_to_dot(nodes: tp.List[tp.Union[DotClass, DotFunction]], \
     ans = \
 """digraph {
     rankdir=TD
-    node [shape="box"]
+    node [shape="box" style="filled" fillcolor="white"]
 """
     for node in nodes:
         ans += f"\n{node}"

@@ -20,13 +20,14 @@ class DotMemberVariable:
         return " "*12 + f'<TR><TD PORT="{self.name}">{escaped_label}{line_num_str}</TD></TR>\n'
 
 class DotClass:
-    def __init__(self, name: str, filepath: str, line_num: int):
+    def __init__(self, name: str, filepath: str, line_num: int, tags: str=None):
         self.class_label = name
         self.name = name.replace(':', '_')
         self.filepath = filepath
         self.line_num = line_num
         self.member_variables: tp.List[DotMemberVariable] = []
         self.methods: tp.List[DotFunction] = []
+        self.tags: str = tags
 
     def add_member_variable(self, name: str, *args, **kwargs) -> None:
         self.member_variables.append(DotMemberVariable(name, *args, **kwargs))
@@ -41,6 +42,8 @@ class DotClass:
     def __str__(self) -> str:
         ans = "    subgraph cluster_" + self.name + " {\n"
         ans += f'        label="class {self.class_label}\\n{self.filepath} {self.line_num}"\n'
+        if self.tags:
+            ans += f'        {self.tags}\n'
         if self.member_variables:
             ans += \
 f"""

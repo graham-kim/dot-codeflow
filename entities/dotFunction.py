@@ -33,7 +33,7 @@ class DotLoop(DotParam):
         return " "*12 + f'<TR><TD PORT="{self.name}"><U>loop</U> {escaped_label}</TD></TR>\n'
 
 class DotFunction:
-    def __init__(self, name: str, line_num: int=None, retval: str=None, label: str=None):
+    def __init__(self, name: str, line_num: int=None, retval: str=None, label: str=None, tags: str=None):
         self.name = name
         self.line_num = line_num
         if label:
@@ -44,6 +44,7 @@ class DotFunction:
         self.params: tp.List[DotParam] = []
         self.localvars: tp.List[DotLocalVar] = []
         self.loops: tp.List[DotLoop] = []
+        self.tags = tags
 
     def add_param(self, name: str, var_type: str=None) -> None:
         label = f"{var_type} {name}" if var_type else "name"
@@ -78,5 +79,8 @@ f"""
         if self.retval:
             escaped_retval = substitute_angular_brackets_after_escaping(self.retval)
             ans += f'            <TR><TD PORT="retval"><B>returns</B> {escaped_retval}</TD></TR>\n'
-        ans += "        </TABLE>>]\n"
+        ans += "        </TABLE>>"
+        if self.tags:
+            ans += f' {self.tags}'
+        ans += "]\n"
         return ans
