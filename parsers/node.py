@@ -6,12 +6,21 @@ class NodeParser:
     def __init__(self):
         self.current_class: DotClass = None
         self.current_function: DotFunction = None
-        self.finished_classes: tp.List[DotClass] = []
+        self.known_functions: tp.Dict[str, DotFunction] = {}
+        self.finished_classes: tp.Dict[str, DotClass] = {}
         self.standalone_functions: tp.List[DotFunction] = []
+
+    @property
+    def nodes(self) -> tp.List[tp.Union[DotClass, DotFunction]]:
+        return [v for v in self.finished_classes.values()] + self.standalone_functions
 
     def _finish_class(self) -> None:
         if self.current_class and not self.current_class.empty():
-            self.finished_classes.append(self.current_class)
+            self.finished_classes[self.current_class.name] = self.current_class
+
+        if self.current_function:
+            self.known_functions[self.current_function.name] = self.current_function
+
         self.current_class = None
         self.current_function = None
 
@@ -28,11 +37,16 @@ class NodeParser:
         if len(tokens) < 2 or len(tokens) > 3:
             raise Exception(f"Wrong number of tokens when starting a class:\n{line}")
 
+        name = tokens[0].strip()
+        if name in self.finished_classes:
+            self.current_class = self.finished_classes[name]
+            return
+
         num: int = None
         if len(tokens) == 3:
             num = int(tokens[2].strip())
 
-        self.current_class = DotClass(name=tokens[0].strip(), filepath=tokens[1].strip(), line_num=num)
+        self.current_class = DotClass(name=name, filepath=tokens[1].strip(), line_num=num)
 
     def _parse_member_variable(self, line: str) -> None:
         original_line = line
@@ -80,6 +94,14 @@ class NodeParser:
             src_filename = tokens[1].strip()
             if src_filename:
                 label = f"{name}()\\n{src_filename}"
+
+        map_name = name
+        if self.current_class:
+            map_name = self.current_class.prepend_class_name_to_method_name(name)
+        if map_name in self.known_functions:
+            self.current_function = self.known_functions[map_name]
+            return
+
         self.current_function = DotFunction( \
             name=name, line_num=tokens[-1].strip(), retval=retval, label=label)
         if self.current_class is not None:
@@ -118,6 +140,28 @@ class NodeParser:
             else:
                 raise Exception(f"Expected a class or function to parse this line under:\n{line}")
 
+    def parse_stripped_line(self, stripped_line: str):
+        if stripped_line.startswith("_ "):
+            self._check_current_class_exists(stripped_line)
+            self._parse_member_variable(stripped_line)
+            self.current_function = None
+        elif stripped_line.startswith("- "):
+            self._parse_method(stripped_line)
+        elif stripped_line.startswith("$ "):
+            self._check_current_function_exists(stripped_line)
+            self._parse_param(stripped_line)
+        elif stripped_line.startswith("& "):
+            self._check_current_function_exists(stripped_line)
+            self._parse_local_var(stripped_line)
+        elif stripped_line.startswith("( "):
+            self._check_current_function_exists(stripped_line)
+            self._parse_loop(stripped_line)
+        elif stripped_line.startswith("= "):
+            self._parse_tags_for_function_or_class(stripped_line)
+        else:
+            self._finish_class()
+            self._start_class(stripped_line)
+
     def parse_file(self, filename: str) -> None:
         with open(filename, "r") as inF:
             for line in inF:
@@ -126,24 +170,6 @@ class NodeParser:
                     continue
                 elif len(stripped_line) == 0:
                     self._finish_class()
-                elif stripped_line.startswith("_ "):
-                    self._check_current_class_exists(stripped_line)
-                    self._parse_member_variable(stripped_line)
-                    self.current_function = None
-                elif stripped_line.startswith("- "):
-                    self._parse_method(stripped_line)
-                elif stripped_line.startswith("$ "):
-                    self._check_current_function_exists(stripped_line)
-                    self._parse_param(stripped_line)
-                elif stripped_line.startswith("& "):
-                    self._check_current_function_exists(stripped_line)
-                    self._parse_local_var(stripped_line)
-                elif stripped_line.startswith("( "):
-                    self._check_current_function_exists(stripped_line)
-                    self._parse_loop(stripped_line)
-                elif stripped_line.startswith("= "):
-                    self._parse_tags_for_function_or_class(stripped_line)
                 else:
-                    self._finish_class()
-                    self._start_class(stripped_line)
+                    self.parse_stripped_line(stripped_line)
         self._finish_class()

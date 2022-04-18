@@ -1,8 +1,7 @@
 import typing as tp
 import argparse
 
-from parsers.node import NodeParser
-from parsers.link import LinkParser
+from parsers.combined import CombinedParser
 
 from entities.dotClass import DotClass
 from entities.dotFunction import DotFunction
@@ -10,18 +9,15 @@ from entities.dotLink import DotLink
 
 def setup_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser()
-    parser.add_argument('filename_prefix', help= \
-        "Prefix for input filenames")
+    parser.add_argument('filenames', nargs='+', help= "Input filenames")
     parser.add_argument('--gen-inputs', action='store_true', help= \
-        "Generate input files with the given prefix")
+        "Generate input file content for given filenames")
     return parser
 
-node_file_suffix = "_nodes.txt"
-link_file_suffix = "_links.txt"
-
-def generate_input_files(filename_prefix: str):
-    with open(filename_prefix + node_file_suffix, 'w') as outF:
-        outF.write(
+def generate_input_files(filenames: tp.List[str]):
+    for name in filenames:
+        with open(name, 'w') as outF:
+            outF.write(
 """# Example:
 # School path/to/school.cc 15
 # = bgcolor="green"
@@ -31,35 +27,27 @@ def generate_input_files(filename_prefix: str):
 # - enrol_student 18 @ void
 # $ student Person
 # - is_student 20 @ bool
-# $ name std::string
-# & temp_var bool
+# $ param_name std::string
+# & local_var bool
 # ( while_not_exiting 24
 #
 # - ask_db path/to/school.cc 40
 # & db_name std::string
 # = fillcolor="black" color="white" fontcolor="yellow"
+#
+# < Person_mem_var name
+# > School_is_student name | style="dashed, bold" color=red | 132
 
 """
-        )
+            )
 
-    with open(filename_prefix + link_file_suffix, 'w') as outF:
-        outF.write(
-"""# Example:
-# Person_mem_var name
-# School_is_student name
-# color=red | 132
+def parse_files(filenames: tp.List[str]) -> CombinedParser:
+    comb_p = CombinedParser()
 
-"""
-        )
+    for name in filenames:
+        comb_p.parse_file(name)
 
-def parse_files(filename_prefix: str) -> tp.Tuple[NodeParser, LinkParser]:
-    node_p = NodeParser()
-    link_p = LinkParser()
-
-    node_p.parse_file(filename_prefix + node_file_suffix)
-    link_p.parse_file(filename_prefix + link_file_suffix)
-
-    return node_p, link_p
+    return comb_p
 
 def write_translation_to_dot(nodes: tp.List[tp.Union[DotClass, DotFunction]], \
                              links: tp.List[DotLink]) -> str:
@@ -79,7 +67,7 @@ def write_translation_to_dot(nodes: tp.List[tp.Union[DotClass, DotFunction]], \
 if __name__ == '__main__':
     args = setup_parser().parse_args()
     if args.gen_inputs:
-        generate_input_files(args.filename_prefix)
+        generate_input_files(args.filenames)
     else:
-        node_p, link_p = parse_files(args.filename_prefix)
-        print(write_translation_to_dot(node_p.nodes, link_p.finished_links))
+        comb_p = parse_files(args.filenames)
+        print(write_translation_to_dot(comb_p.nodes, comb_p.links))
