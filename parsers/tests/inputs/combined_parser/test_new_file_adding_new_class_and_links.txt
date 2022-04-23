@@ -1,10 +1,10 @@
-SomeActor path/to/actor.cc 12
+Namespace::SomeActor path/to/actor.cc 12
 - ctor 13
 
-OtherLibrary path/to/other_library.cc 15
+Namespace::OtherLibrary path/to/other_library.cc 15
 - findCar 20
 - findHouse 25
 
-< SomeActor_ctor
-> OtherLibrary_findCar
-> OtherLibrary_findHouse
+< Namespace__SomeActor_ctor
+> Namespace__OtherLibrary_findCar
+> Namespace__OtherLibrary_findHouse

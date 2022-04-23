@@ -45,9 +45,9 @@ class TestCombinedParser(unittest.TestCase):
         self.assertEqual(2, len(finished_links), msg= \
             "Should have parsed correct number of links")
 
-        self.assertEqual("SomeActor_ctor -> GreatStruct_calculateSomething", \
+        self.assertEqual("Namespace__SomeActor_ctor -> Namespace__GreatStruct_calculateSomething", \
             str(finished_links[0]).strip(), msg= "Should have parsed link correctly")
-        self.assertEqual("GreatStruct_calculateSomething -> SomeActor_mem_var:isValid [style=dotted]", \
+        self.assertEqual("Namespace__GreatStruct_calculateSomething -> Namespace__SomeActor_mem_var:isValid [style=dotted]", \
             str(finished_links[1]).strip(), msg= "Should have parsed link correctly")
 
     def test_new_file_adding_new_class_and_links(self) -> None:
@@ -63,7 +63,7 @@ class TestCombinedParser(unittest.TestCase):
             "Should have parsed correct number of links")
 
         link_heads = [str(l).split('->')[0].strip() for l in finished_links]
-        self.assertEqual(3, link_heads.count("SomeActor_ctor"), msg= \
+        self.assertEqual(3, link_heads.count("Namespace__SomeActor_ctor"), msg= \
             "Should have parsed correct number of links which start from this node")
 
     def test_new_file_adding_new_methods_to_existing_class(self) -> None:
@@ -75,5 +75,10 @@ class TestCombinedParser(unittest.TestCase):
             "Should have parsed correct number of links")
 
         link_tails = [str(l).split('->')[1].strip() for l in finished_links]
-        self.assertEqual(2, link_tails.count("SomeActor_incrCount [style=dashed color=red]"), msg= \
+        self.assertEqual(2, link_tails.count("Namespace__SomeActor_incrCount [style=dashed color=red]"), msg= \
             "Should have parsed correct number of links which end on this node")
+
+        finished_classes = self.parser.node_parser.finished_classes
+        class0 = finished_classes["Namespace__SomeActor"]
+        self.assertEqual(3, len(class0.methods), msg= \
+            "This class should have expected number of methods")
