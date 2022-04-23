@@ -21,7 +21,7 @@ class TestNodeParser(unittest.TestCase):
         self.assertEqual(2, len(self.parser.finished_classes), msg= \
             "Should have parsed correct number of classes")
 
-        class0 = self.parser.finished_classes[0]
+        class0 = self.parser.finished_classes["SomeActor"]
         self.assertEqual(2, len(class0.member_variables), msg= \
             "First class should have expected number of member variables")
         self.assertEqual(2, len(class0.methods), msg= \
@@ -29,7 +29,7 @@ class TestNodeParser(unittest.TestCase):
         self.assertEqual(1, len(class0.methods[0].params), msg= \
             "First method of first class should have expected number of params")
 
-        class1 = self.parser.finished_classes[1]
+        class1 = self.parser.finished_classes["GreatStruct"]
         self.assertEqual(3, len(class1.member_variables), msg= \
             "Second class should have expected number of member variables")
 
@@ -58,7 +58,7 @@ class TestNodeParser(unittest.TestCase):
         self.assertEqual(1, len(self.parser.finished_classes), msg= \
             "Should have parsed correct number of classes")
 
-        class0 = self.parser.finished_classes[0]
+        class0 = self.parser.finished_classes["SomeActor"]
         self.assertEqual(1, len(class0.methods), msg= \
             "First class should have expected number of methods")
 
