@@ -1,0 +1,6 @@
+Namespace::SomeActor path/to/actor.cc 12
+- useTheThing 20
+
+< Namespace__SomeActor_useTheThing
+< Namespace__GreatStruct_calculateSomething
+> Namespace__SomeActor_incrCount | style=dashed color=red |

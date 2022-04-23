@@ -1,0 +1,16 @@
+Namespace::SomeActor path/to/actor.cc 12
+- ctor 13
+$ count int
+_ count int 17
+_ isValid bool | <B>important</B> isValid
+- incrCount 25
+
+Namespace::GreatStruct path/to/some_struct.cc 15
+_ count int 17
+_ name str 18
+_ flag bool 19
+- calculateSomething 20
+
+< Namespace__SomeActor_ctor
+<> Namespace__GreatStruct_calculateSomething
+> Namespace__SomeActor_mem_var isValid | style=dotted |

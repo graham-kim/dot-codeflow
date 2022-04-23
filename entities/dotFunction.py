@@ -33,7 +33,7 @@ class DotLoop(DotParam):
         return " "*12 + f'<TR><TD PORT="{self.name}"><U>loop</U> {escaped_label}</TD></TR>\n'
 
 class DotFunction:
-    def __init__(self, name: str, line_num: int=None, retval: str=None, label: str=None, tags: str=None):
+    def __init__(self, name: str, line_num: str=None, retval: str=None, label: str=None, tags: str=None):
         self.name = name
         self.line_num = line_num
         if label:

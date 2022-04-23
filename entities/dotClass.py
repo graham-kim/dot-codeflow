@@ -32,8 +32,11 @@ class DotClass:
     def add_member_variable(self, name: str, *args, **kwargs) -> None:
         self.member_variables.append(DotMemberVariable(name, *args, **kwargs))
 
+    def prepend_class_name_to_method_name(self, name: str) -> str:
+        return f"{self.name}_{name}"
+
     def add_method(self, func: DotFunction) -> None:
-        func.name = f"{self.name}_{func.name}"
+        func.name = self.prepend_class_name_to_method_name(func.name)
         self.methods.append(func)
 
     def empty(self) -> bool:
