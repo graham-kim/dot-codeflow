@@ -82,3 +82,13 @@ class TestCombinedParser(unittest.TestCase):
         class0 = finished_classes["Namespace__SomeActor"]
         self.assertEqual(3, len(class0.methods), msg= \
             "This class should have expected number of methods")
+
+
+    def test_new_file_adding_dupe_methods_to_existing_class(self) -> None:
+        self.parser.parse_file(inputs_dir / 'test_parse_two_classes_with_links.txt')
+        self.parse_test_input()
+
+        finished_classes = self.parser.node_parser.finished_classes
+        class0 = finished_classes["Namespace__SomeActor"]
+        self.assertEqual(2, len(class0.methods), msg= \
+            "This class should have expected number of methods")
