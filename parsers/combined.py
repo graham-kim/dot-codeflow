@@ -49,5 +49,5 @@ class CombinedParser:
                     if self.mode == self.CurrentMode.PARSE_LINK:
                         raise Exception(f"Got a node line while parsing a link:\n{i}: {stripped_line}")
                     self.mode = self.CurrentMode.PARSE_NODE
-                    self.node_parser.parse_stripped_line(stripped_line)
+                    self.node_parser.parse_stripped_line(i, stripped_line)
         self._finish_current_parsing()
