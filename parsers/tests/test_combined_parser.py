@@ -49,3 +49,31 @@ class TestCombinedParser(unittest.TestCase):
             str(finished_links[0]).strip(), msg= "Should have parsed link correctly")
         self.assertEqual("GreatStruct_calculateSomething -> SomeActor_mem_var:isValid [style=dotted]", \
             str(finished_links[1]).strip(), msg= "Should have parsed link correctly")
+
+    def test_new_file_adding_new_class_and_links(self) -> None:
+        self.parser.parse_file(inputs_dir / 'test_parse_two_classes_with_links.txt')
+        self.parse_test_input()
+
+        finished_classes = self.parser.node_parser.finished_classes
+        self.assertEqual(3, len(finished_classes), msg= \
+            "Should have parsed correct number of classes")
+
+        finished_links = self.parser.link_parser.finished_links
+        self.assertEqual(4, len(finished_links), msg= \
+            "Should have parsed correct number of links")
+
+        link_heads = [str(l).split('->')[0].strip() for l in finished_links]
+        self.assertEqual(3, link_heads.count("SomeActor_ctor"), msg= \
+            "Should have parsed correct number of links which start from this node")
+
+    def test_new_file_adding_new_methods_to_existing_class(self) -> None:
+        self.parser.parse_file(inputs_dir / 'test_parse_two_classes_with_links.txt')
+        self.parse_test_input()
+
+        finished_links = self.parser.link_parser.finished_links
+        self.assertEqual(4, len(finished_links), msg= \
+            "Should have parsed correct number of links")
+
+        link_tails = [str(l).split('->')[1].strip() for l in finished_links]
+        self.assertEqual(2, link_tails.count("SomeActor_incrCount [style=dashed color=red]"), msg= \
+            "Should have parsed correct number of links which end on this node")

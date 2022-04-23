@@ -1,0 +1,6 @@
+SomeActor path/to/actor.cc 12
+- useTheThing 20
+
+< SomeActor_useTheThing
+< GreatStruct_calculateSomething
+> SomeActor_incrCount | style=dashed color=red |
