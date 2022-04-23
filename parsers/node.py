@@ -39,8 +39,9 @@ class NodeParser:
             raise Exception(f"Wrong number of tokens when starting a class:\n{self.line_num}: {line}")
 
         name = tokens[0].strip()
-        if name in self.finished_classes:
-            self.current_class = self.finished_classes[name]
+        no_colon_name = name.replace(':', '_')
+        if no_colon_name in self.finished_classes:
+            self.current_class = self.finished_classes[no_colon_name]
             return
 
         num: int = None
