@@ -92,3 +92,14 @@ class TestCombinedParser(unittest.TestCase):
         class0 = finished_classes["Namespace__SomeActor"]
         self.assertEqual(2, len(class0.methods), msg= \
             "This class should have expected number of methods")
+
+    def test_parse_two_classes_with_triple_links(self) -> None:
+        self.parse_test_input()
+
+        finished_links = self.parser.link_parser.finished_links
+        self.assertEqual(4, len(finished_links), msg= \
+            "Should have parsed correct number of links")
+
+        link_tails = [str(l).split('->')[1].strip() for l in finished_links]
+        self.assertEqual(3, link_tails.count("Namespace__SomeActor_mem_var:isValid [style=dotted]"), msg= \
+            "Should have parsed correct number of links which end on this node with no label")
