@@ -22,8 +22,14 @@ class MultiLinkParser:
 
         for dstdata in self.current_dsts_data:
             for src in self.current_srcs:
-                link = DotLink(src, dstdata.dst, dstdata.tags, dstdata.label)
-                self.finished_links.append(link)
+                if dstdata.label.startswith('** '):
+                    link_label = dstdata.label[3:]
+                    link = DotLink(src, dstdata.dst, dstdata.tags, link_label)
+                    for i in range(3):
+                        self.finished_links.append(link)
+                else:
+                    link = DotLink(src, dstdata.dst, dstdata.tags, dstdata.label)
+                    self.finished_links.append(link)
         self.current_dsts_data = []
         self.current_srcs = []
 
