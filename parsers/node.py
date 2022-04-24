@@ -10,6 +10,7 @@ class NodeParser:
         self.finished_classes: tp.Dict[str, DotClass] = {}
         self.standalone_functions: tp.List[DotFunction] = []
         self.line_num: int = None
+        self.rank_same_clusters: tp.List[str] = None
 
     @property
     def nodes(self) -> tp.List[tp.Union[DotClass, DotFunction]]:
@@ -142,6 +143,13 @@ class NodeParser:
             else:
                 raise Exception(f"Expected a class or function to parse this line under:\n{self.line_num}: {line}")
 
+    def _parse_rank_same_cluster(self, line: str) -> None:
+        tokens = line[1:].split(' ')
+        if self.rank_same_clusters is None:
+            self.rank_same_clusters = []
+        if len(tokens) > 1:
+            self.rank_same_clusters.append(f"rank=same;{';'.join(tokens)}")
+
     def parse_stripped_line(self, line_num: int, stripped_line: str):
         self.line_num = line_num
         if stripped_line.startswith("_ "):
@@ -161,6 +169,8 @@ class NodeParser:
             self._parse_loop(stripped_line)
         elif stripped_line.startswith("= "):
             self._parse_tags_for_function_or_class(stripped_line)
+        elif stripped_line.startswith("@"):
+            self._parse_rank_same_cluster(stripped_line)
         else:
             self._finish_class()
             self._start_class(stripped_line)
