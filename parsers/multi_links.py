@@ -22,8 +22,8 @@ class MultiLinkParser:
 
         for dstdata in self.current_dsts_data:
             for src in self.current_srcs:
-                if dstdata.label.startswith('** '):
-                    link_label = dstdata.label[3:]
+                if dstdata.label is not None and dstdata.label.startswith('**'):
+                    link_label = dstdata.label[2:].strip()
                     link = DotLink(src, dstdata.dst, dstdata.tags, link_label)
                     for i in range(3):
                         self.finished_links.append(link)
