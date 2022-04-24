@@ -144,7 +144,7 @@ class NodeParser:
                 raise Exception(f"Expected a class or function to parse this line under:\n{self.line_num}: {line}")
 
     def _parse_rank_same_cluster(self, line: str) -> None:
-        tokens = line[1:].split(' ')
+        tokens = [t for t in line[1:].strip().split(' ') if t]
         if self.rank_same_clusters is None:
             self.rank_same_clusters = []
         if len(tokens) > 1:
