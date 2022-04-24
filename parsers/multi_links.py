@@ -42,7 +42,12 @@ class MultiLinkParser:
     def _add_src(self, line_num: int, line: str):
         if self.current_dsts_data:
             raise Exception(f"Finish current links before adding new sources:\n{line_num}: {line}")
-        formatted_src = self._format_link_identifier( line.split(' ') )
+
+        try:
+            formatted_src = self._format_link_identifier( line.split(' ') )
+        except Exception as ex:
+            raise Exception(f"{ex}\n{line_num}: {line}")
+
         self.current_srcs.append(formatted_src)
 
     def _add_dst(self, line_num: int, line: str):
