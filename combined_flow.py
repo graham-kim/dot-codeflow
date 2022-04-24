@@ -37,6 +37,8 @@ def generate_input_files(filenames: tp.List[str]):
 #
 # < Person_mem_var name
 # > School_is_student name | style="dashed, bold" color=red | 132
+#
+# @ School_ctor School_is_student
 
 """
             )
@@ -50,17 +52,23 @@ def parse_files(filenames: tp.List[str]) -> CombinedParser:
     return comb_p
 
 def write_translation_to_dot(nodes: tp.List[tp.Union[DotClass, DotFunction]], \
-                             links: tp.List[DotLink]) -> str:
+                             links: tp.List[DotLink], \
+                             rank_same_clusters: tp.Optional[tp.List[str]]) -> str:
     ans = \
 """digraph {
     rankdir=TD
     node [shape="box" style="filled" fillcolor="white"]
 """
+    if rank_same_clusters is not None:
+        ans += "    newrank=true\n"
     for node in nodes:
         ans += f"\n{node}"
     ans += "\n"
     for link in links:
         ans += str(link)
+    if rank_same_clusters:
+        for line in rank_same_clusters:
+            ans += "    { " + line + " }\n"
     ans += "}"
     return ans
 
@@ -70,4 +78,4 @@ if __name__ == '__main__':
         generate_input_files(args.filenames)
     else:
         comb_p = parse_files(args.filenames)
-        print(write_translation_to_dot(comb_p.nodes, comb_p.links))
+        print(write_translation_to_dot(comb_p.nodes, comb_p.links, comb_p.node_parser.rank_same_clusters))
