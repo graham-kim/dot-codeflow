@@ -22,8 +22,14 @@ class MultiLinkParser:
 
         for dstdata in self.current_dsts_data:
             for src in self.current_srcs:
-                link = DotLink(src, dstdata.dst, dstdata.tags, dstdata.label)
-                self.finished_links.append(link)
+                if dstdata.label is not None and dstdata.label.startswith('**'):
+                    link_label = dstdata.label[2:].strip()
+                    link = DotLink(src, dstdata.dst, dstdata.tags, link_label)
+                    for i in range(3):
+                        self.finished_links.append(link)
+                else:
+                    link = DotLink(src, dstdata.dst, dstdata.tags, dstdata.label)
+                    self.finished_links.append(link)
         self.current_dsts_data = []
         self.current_srcs = []
 
@@ -36,7 +42,12 @@ class MultiLinkParser:
     def _add_src(self, line_num: int, line: str):
         if self.current_dsts_data:
             raise Exception(f"Finish current links before adding new sources:\n{line_num}: {line}")
-        formatted_src = self._format_link_identifier( line.split(' ') )
+
+        try:
+            formatted_src = self._format_link_identifier( line.split(' ') )
+        except Exception as ex:
+            raise Exception(f"{ex}\n{line_num}: {line}")
+
         self.current_srcs.append(formatted_src)
 
     def _add_dst(self, line_num: int, line: str):
