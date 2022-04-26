@@ -10,7 +10,7 @@ class DotLink:
     def __str__(self) -> str:
         ans = f"    {self.src} -> {self.dst}"
         if self.tags and self.label:
-            ans += f' [{self.tags} label={self.label}]'
+            ans += f' [{self.tags} label="{self.label}"]'
         elif self.tags:
             ans += f" [{self.tags}]"
         elif self.label:
