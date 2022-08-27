@@ -1,11 +1,14 @@
-from PIL import Image
+import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
 from io import BytesIO
 
 import pydot as pd
 
 def view_pydot(pdot):
     bytes = BytesIO(pdot.create_png())
-    Image.open(bytes).show()
+    img = mpimg.imread(bytes)
+    plt.imshow(img, aspect='equal')
+    plt.show()
 
 bigdot = pd.Dot()
 
