@@ -1,4 +1,11 @@
+from PIL import Image
+from io import BytesIO
+
 import pydot as pd
+
+def view_pydot(pdot):
+    bytes = BytesIO(pdot.create_png())
+    Image.open(bytes).show()
 
 bigdot = pd.Dot()
 
@@ -12,4 +19,5 @@ smol.add_node( pd.Node("C") )
 
 dot.add_edge( pd.Edge("A", "C") )
 
-bigdot.write("wah.dot")
+view_pydot(bigdot)
+#bigdot.write("wah.dot")
