@@ -1,10 +1,15 @@
 import pydotplus.graphviz as pdg
 
-dot = pdg.Dot()
+bigdot = pdg.Dot()
 
-dot.add_node( pdg.Node("A") )
-dot.add_node( pdg.Node("B") )
+dot = pdg.Cluster("clus1")
+smol = pdg.Cluster("clus2")
+bigdot.add_subgraph( dot )
+dot.add_subgraph( smol )
+
+smol.add_node( pdg.Node("A") )
+smol.add_node( pdg.Node("B") )
 
 dot.add_edge( pdg.Edge("A", "B") )
 
-dot.write("wah.dot")
+bigdot.write("wah.dot")
