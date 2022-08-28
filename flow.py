@@ -1,85 +1,47 @@
 import typing as tp
 import argparse
 
-from parsers.node import NodeParser
-from parsers.link import LinkParser
-
-from entities.dotClass import DotClass
-from entities.dotFunction import DotFunction
-from entities.dotLink import DotLink
+from parsers.general import GeneralParser
 
 def setup_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser()
-    parser.add_argument('filename_prefix', help= \
-        "Prefix for input filenames")
+    parser.add_argument('filenames', nargs='+', help= "Input filenames")
     parser.add_argument('--gen-inputs', action='store_true', help= \
-        "Generate input files with the given prefix")
+        "Generate input file content for given filenames")
     return parser
 
-node_file_suffix = "_nodes.txt"
-link_file_suffix = "_links.txt"
-
-def generate_input_files(filename_prefix: str):
-    with open(filename_prefix + node_file_suffix, 'w') as outF:
-        outF.write(
+def generate_input_files(filenames: tp.List[str]):
+    for name in filenames:
+        with open(name, 'w') as outF:
+            outF.write(
 """# Example:
-# School path/to/school.cc 15
-# = bgcolor="green"
-# - ctor 16 | [[B]]cons[[/B]]tructor\\n<B>
-# _ name std::string
-# _ students std::list<Person>
-# - enrol_student 18 @ void
-# $ student Person
-# - is_student 20 @ bool
-# $ name std::string
-# & temp_var bool
-# ( while_not_exiting 24
-#
-# - ask_db path/to/school.cc 40
-# & db_name std::string
-# = fillcolor="black" color="white" fontcolor="yellow"
+""")
 
-"""
-        )
+def parse_files(filenames: tp.List[str]):
+    parser = GeneralParser()
 
-    with open(filename_prefix + link_file_suffix, 'w') as outF:
-        outF.write(
-"""# Example:
-# Person_mem_var name
-# School_is_student name
-# color=red | 132
+    for name in filenames:
+        parser.parse_file(name)
 
-"""
-        )
+    return parser.get_pydot_dot()
 
-def parse_files(filename_prefix: str) -> tp.Tuple[NodeParser, LinkParser]:
-    node_p = NodeParser()
-    link_p = LinkParser()
+def pretty_print_dot(dot):
+    bigdot.write("temp.dot")
 
-    node_p.parse_file(filename_prefix + node_file_suffix)
-    link_p.parse_file(filename_prefix + link_file_suffix)
+    indent_level = 0
+    with open("temp.dot", "r") as inF:
+        for line in inF:
+            if line.strip().endswith("{"):
+                indent_level -= 1
 
-    return node_p, link_p
+            print(" "*indent_level*4 + line)
 
-def write_translation_to_dot(nodes: tp.List[tp.Union[DotClass, DotFunction]], \
-                             links: tp.List[DotLink]) -> str:
-    ans = \
-"""digraph {
-    rankdir=TD
-    node [shape="box" style="filled" fillcolor="white"]
-"""
-    for node in nodes:
-        ans += f"\n{node}"
-    ans += "\n"
-    for link in links:
-        ans += str(link)
-    ans += "}"
-    return ans
+            if line.strip().endswith("{"):
+                indent_level += 1
 
 if __name__ == '__main__':
     args = setup_parser().parse_args()
     if args.gen_inputs:
         generate_input_files(args.filename_prefix)
     else:
-        node_p, link_p = parse_files(args.filename_prefix)
-        print(write_translation_to_dot(node_p.nodes, link_p.finished_links))
+        dot = parse_files(args.filename_prefix)
