@@ -29,6 +29,7 @@ def link_pattern() -> pp.And:
 def dot_attr_pattern() -> pp.And:
     return pp.Char("=") \
          + pp.Combine(
-               pp.Word(pp.alphas) + "=" + pp.Word(pp.alphanums+'"'+"'") \
+               pp.Word(pp.alphas) + "=" \
+             + (pp.Word(pp.alphanums) | pp.quotedString) \
              + pp.Optional(pp.Suppress(",")) # Allow comma separation
            )[1,...]("attrs")

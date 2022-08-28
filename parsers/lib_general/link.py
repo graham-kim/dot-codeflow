@@ -108,7 +108,7 @@ class MultiLinksStorage:
             attrname, value = dot_attr.split('=')
             attrname = "set_" + attrname
 
-            self.current_dot_attrs.dot_attrs[attrname] = value
+            self.current_dot_attrs[attrname] = value
 
     def add_to_cluster(self) -> None:
         for link in self.finished_links:
