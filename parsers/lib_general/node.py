@@ -2,10 +2,13 @@ import typing as tp
 import pydot as pd
 
 class NodeStorage:
-    def __init__(self, name: str, label: str, clus: pd.Cluster, clus_full_name: str):
+    def __init__(self, name: str, label: tp.List[str], clus: pd.Cluster, clus_full_name: str):
         self.name = name
         self.dot_attrs: tp.Dict[str, str] = {}
-        self.label = label
+        if label:
+            self.label = " ".join(label)
+        else:
+            self.label = ""
         self.clus = clus
         self.clus_full_name = clus_full_name
 

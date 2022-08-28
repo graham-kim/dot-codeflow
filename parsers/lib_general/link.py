@@ -40,9 +40,8 @@ class LinkStorage:
             link = pd.Edge(self.full_src, self.full_dst)
             self.clus.add_edge(link)
 
-        transformed_label = self._transform_label()
-        if transformed_label:
-            link.set_label(transformed_label)
+        if self.label:
+            link.set_label(self.label)
 
         for attrname,value in self.dot_attrs.items():
             if not hasattr(link, attrname):
@@ -64,6 +63,12 @@ class MultiLinksStorage:
         self.clus = clus
         self.clus_full_name = clus_full_name
 
+    def _transform_link_label(self, label: tp.List[str]) -> str:
+        if label:
+            return " ".join(label)
+        else:
+            return ""
+
     def finish_links(self):
         if self.current_srcs and not self.current_dsts:
             raise Exception("Need to specify at least one src before finishing link")
@@ -72,7 +77,8 @@ class MultiLinksStorage:
 
         for dstdata in self.current_dsts:
             for src in self.current_srcs:
-                link = LinkStorage(src, dstdata.dst, self.current_dot_attrs, dstdata.label, \
+                link = LinkStorage(src, dstdata.dst, self.current_dot_attrs, \
+                                   self._transform_link_label(dstdata.label), \
                                    self.clus, self.clus_full_name)
                 self.finished_links.append(link)
         self.current_dsts = []

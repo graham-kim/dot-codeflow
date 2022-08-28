@@ -14,6 +14,7 @@ class GeneralParser(ParserInterface):
         PARSE_NODE  = 1
         PARSE_LINK  = 2
         PARSE_NODE_AND_LINKS = 3
+        PARSE_CLUSTER = 4
 
     def __init__(self):
         self.mode = self.CurrentMode.NOT_PARSING
@@ -66,15 +67,20 @@ class GeneralParser(ParserInterface):
             parent_clus.add_subgraph(clus)
             self.clus_dict[self.clus_joined_name] = clus
 
-        if "attrs" in tok:
-            for dot_attr in tok["attrs"]:
-                attrname, value = dot_attr.split('=')
-                attrname = "set_" + attrname
+        if "label" in tok and tok["label"]:
+            label = " ".join(tok["label"]).replace("@this@", tok["name"])
+            clus.set_label(label)
 
-                if not hasattr(clus, attrname):
-                    raise Exception(f"pydot.Cluster has no {attrname} attribute\n{line_num}: {stripped_line}")
+    def _add_cluster_attr(self, line_num: int, stripped_line: str) -> None:
+        tok = self.pp_dot_attr_pattern.parseString(stripped_line)
+        for dot_attr in tok["attrs"]:
+            attrname, value = dot_attr.split('=')
+            attrname = "set_" + attrname
 
-                getattr(clus, attrname)(value) # e.g. set_label() or set_bgcolor()
+            if not hasattr(self._get_curr_cluster(), attrname):
+                raise Exception(f"pydot.Cluster has no {attrname} attribute\n{line_num}: {stripped_line}")
+
+            getattr(self._get_curr_cluster(), attrname)(value)
 
     def _parse_new_node(self, line_num: int, stripped_line: str) -> None:
         tok = self.pp_node_pattern.parseString(stripped_line)
@@ -112,6 +118,13 @@ class GeneralParser(ParserInterface):
         except Exception as ex:
             raise Exception(f"Above exception caused by line {line_num}:\n{stripped_line}") from ex
 
+    def _parsing_node_or_link(self) -> bool:
+        return self.mode in (
+            self.CurrentMode.PARSE_NODE,
+            self.CurrentMode.PARSE_LINK,
+            self.CurrentMode.PARSE_NODE_AND_LINKS,
+        )
+
     def parse_file(self, filename: str) -> None:
         with open(filename, "r") as inF:
             for i, line in enumerate(inF):
@@ -121,8 +134,9 @@ class GeneralParser(ParserInterface):
                 elif len(stripped_line) == 0:
                     self._finish_current_parsing()
                 elif stripped_line.startswith('/@'):
-                    if self.mode != self.CurrentMode.NOT_PARSING:
+                    if self._parsing_node_or_link():
                         raise Exception(f"Finish parsing node/link before starting a new cluster:\n{i}: {stripped_line}")
+                    self.mode = self.CurrentMode.PARSE_CLUSTER
                     self._parse_enter_cluster(i, stripped_line)
                 elif stripped_line.startswith('@/'):
                     if not self.curr_clus_hierarchy:
@@ -146,6 +160,8 @@ class GeneralParser(ParserInterface):
                 elif stripped_line.startswith('= '):
                     if self.mode == self.CurrentMode.NOT_PARSING:
                         raise Exception(f"Start a node or link before specifying DOT object attributes:\n{i}: {stripped_line}")
+                    elif self.mode == self.CurrentMode.PARSE_CLUSTER:
+                        self._add_cluster_attr(i, stripped_line)
                     elif self.mode == self.CurrentMode.PARSE_LINK:
                         self._add_link_attr(i, stripped_line)
                     else:
