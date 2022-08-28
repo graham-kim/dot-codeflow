@@ -4,6 +4,8 @@ import pyparsing as pp
 
 from dataclasses import dataclass
 
+from parsers.lib_general.utils import prepend_clus_name
+
 @dataclass
 class LinkStorage:
     src: str
@@ -21,18 +23,16 @@ class LinkStorage:
 
     @property
     def full_src(self) -> str:
-        return self._prepend_clus_name(self.src)
+        return prepend_clus_name(self.clus_full_name, self.src)
 
     @property
     def full_dst(self) -> str:
-        return self._prepend_clus_name(self.dst)
+        return prepend_clus_name(self.clus_full_name, self.dst)
 
     def _transform_label(self) -> str:
         return self.label
 
     def add_to_cluster(self) -> None:
-        #pre_existing = self.clus.get_edge(x, y)
-        #@3*@
         pre_existing = self.clus.get_edge(self.full_src, self.full_dst)
         if pre_existing:
             link = pre_existing[0]
@@ -41,6 +41,10 @@ class LinkStorage:
             self.clus.add_edge(link)
 
         if self.label:
+            if self.label.find("@3*@") > -1:
+                self.label = self.label.replace("@3*@", "")
+                self.clus.add_edge(pd.Edge(self.full_src, self.full_dst))
+                self.clus.add_edge(pd.Edge(self.full_src, self.full_dst))
             link.set_label(self.label)
 
         for attrname,value in self.dot_attrs.items():

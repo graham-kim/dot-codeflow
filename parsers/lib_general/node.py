@@ -1,6 +1,8 @@
 import typing as tp
 import pydot as pd
 
+from parsers.lib_general.utils import prepend_clus_name
+
 class NodeStorage:
     def __init__(self, name: str, label: tp.List[str], clus: pd.Cluster, clus_full_name: str):
         self.name = name
@@ -12,13 +14,6 @@ class NodeStorage:
         self.clus = clus
         self.clus_full_name = clus_full_name
 
-    @property
-    def full_node_name(self) -> str:
-        if self.clus_full_name:
-            return f"{self.clus_full_name}_{self.name}"
-        else:
-            return self.name
-
     def _transform_label(self) -> str:
         return self.label.replace("@this@", self.name)
 
@@ -27,7 +22,8 @@ class NodeStorage:
         if pre_existing:
             node = pre_existing[0]
         else:
-            node = pd.Node(self.full_node_name)
+            full_name = prepend_clus_name(self.clus_full_name, self.name)
+            node = pd.Node(full_name)
             self.clus.add_node(node)
 
         transformed_label = self._transform_label()

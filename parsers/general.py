@@ -8,6 +8,8 @@ from parsers.lib_general.node import NodeStorage
 from parsers.lib_general.link import MultiLinksStorage
 import parsers.lib_general.patterns as ppp
 
+from parsers.lib_general.utils import prepend_clus_name
+
 class GeneralParser(ParserInterface):
     class CurrentMode(Enum):
         NOT_PARSING = 0
@@ -30,6 +32,9 @@ class GeneralParser(ParserInterface):
         self.pp_node_pattern = ppp.node_pattern()
         self.pp_link_pattern = ppp.link_pattern()
         self.pp_dot_attr_pattern = ppp.dot_attr_pattern()
+        self.pp_ranksame_pattern = ppp.ranksame_pattern()
+
+        self.ranksame_lists: tp.List[tp.List[str]] = []
 
     def _finish_current_parsing(self):
         if self.mode == self.CurrentMode.PARSE_NODE:
@@ -118,6 +123,20 @@ class GeneralParser(ParserInterface):
         except Exception as ex:
             raise Exception(f"Above exception caused by line {line_num}:\n{stripped_line}") from ex
 
+    def _add_ranksame_line(self, line_num: int, stripped_line: str) -> None:
+        try:
+            tok = self.pp_ranksame_pattern.parseString(stripped_line)
+        except Exception as ex:
+            raise Exception(f"Above exception caused by line {line_num}:\n{stripped_line}") from ex
+
+        if "ranksame" in tok:
+            ranksames = []
+            for name in tok["ranksame"]:
+                full_name = prepend_clus_name(self.clus_joined_name, name)
+                ranksames.append(full_name)
+
+            self.ranksame_lists.append(ranksames)
+
     def _parsing_node_or_link(self) -> bool:
         return self.mode in (
             self.CurrentMode.PARSE_NODE,
@@ -167,11 +186,11 @@ class GeneralParser(ParserInterface):
                     else:
                         self._add_node_attr(i, stripped_line)
                 elif stripped_line.startswith('@ '):
-                    raise NotImplementedError("Implement me")
+                    self._add_ranksame_line(i, stripped_line)
                 elif stripped_line.startswith('>>@') or stripped_line.startswith('<<@'):
                     raise NotImplementedError("Implement me")
 
         self._finish_current_parsing()
 
-    def get_pydot_dot(self):
-        return self.dot
+    def get_pydot_dot(self) -> tp.Tuple[pd.Dot, tp.List[tp.List[str]]]:
+        return self.dot, self.ranksame_lists
