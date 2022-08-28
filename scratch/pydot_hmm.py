@@ -22,5 +22,13 @@ smol.add_node( pd.Node("C") )
 
 dot.add_edge( pd.Edge("A", "C") )
 
-view_pydot(bigdot)
+print(dot.get_node("A"))
+print(smol.get_node("A")[0].get_name())
+
+smol.set_label("The Label")
+smol.set_color("red")
+smol.set_bgcolor("green")
+smol.set_style("dashed")
+
+#view_pydot(bigdot)
 #bigdot.write("wah.dot")
