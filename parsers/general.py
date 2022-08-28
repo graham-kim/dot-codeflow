@@ -78,7 +78,7 @@ class GeneralParser(ParserInterface):
             attrname = "set_" + attrname
 
             if not hasattr(self._get_curr_cluster(), attrname):
-                raise Exception(f"pydot.Cluster has no {attrname} attribute\n{line_num}: {stripped_line}")
+                raise Exception(f"pydot.Cluster has no {attrname} attribute\nline {line_num}: {stripped_line}")
 
             getattr(self._get_curr_cluster(), attrname)(value)
 
@@ -135,31 +135,31 @@ class GeneralParser(ParserInterface):
                     self._finish_current_parsing()
                 elif stripped_line.startswith('/@'):
                     if self._parsing_node_or_link():
-                        raise Exception(f"Finish parsing node/link before starting a new cluster:\n{i}: {stripped_line}")
+                        raise Exception(f"Finish parsing node/link before starting a new cluster:\nline {i}: {stripped_line}")
                     self.mode = self.CurrentMode.PARSE_CLUSTER
                     self._parse_enter_cluster(i, stripped_line)
                 elif stripped_line.startswith('@/'):
                     if not self.curr_clus_hierarchy:
-                        raise Exception(f"Got an @/ when no cluster had been started with /@ first:\n{i}: {stripped_line}")
+                        raise Exception(f"Got an @/ when no cluster had been started with /@ first:\nline {i}: {stripped_line}")
                     self._finish_current_parsing()
                     self.curr_clus_hierarchy.pop()
                 elif stripped_line.startswith('> ') or stripped_line.startswith('< ') \
                   or stripped_line.startswith('<>'):
                     if self.mode in (self.CurrentMode.PARSE_NODE, self.CurrentMode.PARSE_NODE_AND_LINKS):
-                        raise Exception(f"Got a link line while parsing a node:\n{i}: {stripped_line}")
+                        raise Exception(f"Got a link line while parsing a node:\nline {i}: {stripped_line}")
                     self.mode = self.CurrentMode.PARSE_LINK
 
                     self._parse_link_line(i, stripped_line)
                 elif stripped_line.startswith('- '):
                     if self.mode == self.CurrentMode.PARSE_LINK:
-                        raise Exception(f"Got a node line while parsing a link:\n{i}: {stripped_line}")
+                        raise Exception(f"Got a node line while parsing a link:\nline {i}: {stripped_line}")
                     self._finish_current_parsing()
                     self.mode = self.CurrentMode.PARSE_NODE
 
                     self._parse_new_node(i, stripped_line)
                 elif stripped_line.startswith('= '):
                     if self.mode == self.CurrentMode.NOT_PARSING:
-                        raise Exception(f"Start a node or link before specifying DOT object attributes:\n{i}: {stripped_line}")
+                        raise Exception(f"Start a node or link before specifying DOT object attributes:\nline {i}: {stripped_line}")
                     elif self.mode == self.CurrentMode.PARSE_CLUSTER:
                         self._add_cluster_attr(i, stripped_line)
                     elif self.mode == self.CurrentMode.PARSE_LINK:
