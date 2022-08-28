@@ -16,6 +16,29 @@ def generate_input_files(filenames: tp.List[str]):
         with open(name, 'w') as outF:
             outF.write(
 """# Example:
+/@ Clus1
+
+- A
+- B
+= fillcolor="red"
+
+< A
+> B
+
+@ A B
+
+/@ SubAlpha | the alpha @this@
+= bgcolor=yellow
+- C | node C
+@/
+
+< A
+< B
+= color=red,style="bold, dashed"
+<> SubAlpha_C | link is here @3*@
+> SubAlpha
+
+@/
 """)
 
 def parse_files(filenames: tp.List[str]):
