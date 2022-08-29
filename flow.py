@@ -1,85 +1,85 @@
 import typing as tp
 import argparse
 
-from parsers.node import NodeParser
-from parsers.link import LinkParser
-
-from entities.dotClass import DotClass
-from entities.dotFunction import DotFunction
-from entities.dotLink import DotLink
+from parsers.general import GeneralParser
 
 def setup_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser()
-    parser.add_argument('filename_prefix', help= \
-        "Prefix for input filenames")
+    parser.add_argument('filenames', nargs='+', help= "Input filenames")
     parser.add_argument('--gen-inputs', action='store_true', help= \
-        "Generate input files with the given prefix")
+        "Generate input file content for given filenames")
+    parser.add_argument('--rankdir', default="TD", help="Direction to draw graph")
     return parser
 
-node_file_suffix = "_nodes.txt"
-link_file_suffix = "_links.txt"
-
-def generate_input_files(filename_prefix: str):
-    with open(filename_prefix + node_file_suffix, 'w') as outF:
-        outF.write(
+def generate_input_files(filenames: tp.List[str]):
+    for name in filenames:
+        with open(name, 'w') as outF:
+            outF.write(
 """# Example:
-# School path/to/school.cc 15
-# = bgcolor="green"
-# - ctor 16 | [[B]]cons[[/B]]tructor\\n<B>
-# _ name std::string
-# _ students std::list<Person>
-# - enrol_student 18 @ void
-# $ student Person
-# - is_student 20 @ bool
-# $ name std::string
-# & temp_var bool
-# ( while_not_exiting 24
-#
-# - ask_db path/to/school.cc 40
-# & db_name std::string
-# = fillcolor="black" color="white" fontcolor="yellow"
+/@ Clus1
 
-"""
-        )
+- A
+- B
+= fillcolor="red"
 
-    with open(filename_prefix + link_file_suffix, 'w') as outF:
-        outF.write(
-"""# Example:
-# Person_mem_var name
-# School_is_student name
-# color=red | 132
+< A
+> B
 
-"""
-        )
+@ A B
 
-def parse_files(filename_prefix: str) -> tp.Tuple[NodeParser, LinkParser]:
-    node_p = NodeParser()
-    link_p = LinkParser()
+/@ SubAlpha | the alpha @this@
+= bgcolor=yellow
+- C | node C
+@/
 
-    node_p.parse_file(filename_prefix + node_file_suffix)
-    link_p.parse_file(filename_prefix + link_file_suffix)
+< A
+< B
+= color=red,style="bold, dashed"
+<> SubAlpha_C | link is here @3*@
+> SubAlpha
 
-    return node_p, link_p
+@/
+""")
 
-def write_translation_to_dot(nodes: tp.List[tp.Union[DotClass, DotFunction]], \
-                             links: tp.List[DotLink]) -> str:
-    ans = \
-"""digraph {
-    rankdir=TD
-    node [shape="box" style="filled" fillcolor="white"]
-"""
-    for node in nodes:
-        ans += f"\n{node}"
-    ans += "\n"
-    for link in links:
-        ans += str(link)
-    ans += "}"
-    return ans
+def parse_files(filenames: tp.List[str]):
+    parser = GeneralParser()
+
+    for name in filenames:
+        parser.parse_file(name)
+
+    return parser.get_pydot_dot()
+
+def pretty_print_with_global_attr(dot, args, ranksame_lists: tp.List[tp.List[str]]):
+    dot.write("temp.dot")
+
+    indent_level = 0
+    with open("temp.dot", "r") as inF:
+        for i,line in enumerate(inF):
+            if line.strip().endswith("}"):
+                indent_level -= 1
+                if indent_level == 0: # about to print the last '}' in the file
+                    for list in ranksame_lists:
+                        print('    {rank=same;' + ";".join(list) + '}')
+
+            if line.strip().startswith("subgraph"):
+                print("")
+
+
+            print(" "*indent_level*4 + line.strip('\n').strip('\r'))
+
+            if i == 0:
+                print(f'    rankdir={args.rankdir}')
+                print('    node [shape="box" style="filled" fillcolor="white"]')
+                if ranksame_lists:
+                    print('    newrank=true')
+
+            if line.strip().endswith("{"):
+                indent_level += 1
 
 if __name__ == '__main__':
     args = setup_parser().parse_args()
     if args.gen_inputs:
-        generate_input_files(args.filename_prefix)
+        generate_input_files(args.filenames)
     else:
-        node_p, link_p = parse_files(args.filename_prefix)
-        print(write_translation_to_dot(node_p.nodes, link_p.finished_links))
+        dot, ranksame_lists = parse_files(args.filenames)
+        pretty_print_with_global_attr(dot, args, ranksame_lists)
