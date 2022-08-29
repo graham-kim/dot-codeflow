@@ -53,7 +53,10 @@ class GeneralParser(ParserInterface):
         return '_'.join(self.curr_clus_hierarchy)
 
     def _get_curr_cluster(self) -> pd.Cluster:
-        return self.clus_dict[self.clus_joined_name]
+        if self.curr_clus_hierarchy:
+            return self.clus_dict[self.clus_joined_name]
+        else:
+            return self.dot
 
     def _parse_enter_cluster(self, line_num: int, stripped_line: str) -> None:
         if self.curr_clus_hierarchy:
