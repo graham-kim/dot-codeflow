@@ -23,11 +23,11 @@ def generate_input_files(filenames: tp.List[str]):
 = fillcolor="red"
 
 < A
-> B
+> B | @3*@
 
 @ A B
 
-/@ SubAlpha | the alpha @this@
+/@ SubAlpha | the [[B]]bold[[/B]] @this@
 = bgcolor=yellow
 - C | node C
 @/
@@ -35,10 +35,11 @@ def generate_input_files(filenames: tp.List[str]):
 < A
 < B
 = color=red,style="bold, dashed"
-<> SubAlpha_C | link is here @3*@
+<> SubAlpha_C | link is [[font color="red"]]here[[/font]]
 > SubAlpha
 
 @/
+
 """)
 
 def parse_files(filenames: tp.List[str]):

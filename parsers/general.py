@@ -8,7 +8,7 @@ from parsers.lib_general.node import NodeStorage
 from parsers.lib_general.link import MultiLinksStorage
 import parsers.lib_general.patterns as ppp
 
-from parsers.lib_general.utils import prepend_clus_name
+from parsers.lib_general.utils import prepend_clus_name, substitute_angular_brackets_after_escaping
 
 class GeneralParser(ParserInterface):
     class CurrentMode(Enum):
@@ -77,7 +77,8 @@ class GeneralParser(ParserInterface):
 
         if "label" in tok and tok["label"]:
             label = " ".join(tok["label"]).replace("@this@", tok["name"])
-            clus.set_label(label)
+            escaped = substitute_angular_brackets_after_escaping(label)
+            clus.set_label(f"<{escaped}>")
 
     def _add_cluster_attr(self, line_num: int, stripped_line: str) -> None:
         tok = self.pp_dot_attr_pattern.parseString(stripped_line)

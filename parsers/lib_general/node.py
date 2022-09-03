@@ -1,7 +1,7 @@
 import typing as tp
 import pydot as pd
 
-from parsers.lib_general.utils import prepend_clus_name
+from parsers.lib_general.utils import prepend_clus_name, substitute_angular_brackets_after_escaping
 
 class NodeStorage:
     def __init__(self, name: str, label: tp.List[str], clus: pd.Cluster, clus_full_name: str):
@@ -15,7 +15,9 @@ class NodeStorage:
         self.clus_full_name = clus_full_name
 
     def _transform_label(self) -> str:
-        return self.label.replace("@this@", self.name)
+        escaped = substitute_angular_brackets_after_escaping(
+            self.label.replace("@this@", self.name))
+        return f"<{escaped}>"
 
     def add_to_cluster(self) -> None:
         pre_existing = self.clus.get_node(self.name)
@@ -26,8 +28,8 @@ class NodeStorage:
             node = pd.Node(full_name)
             self.clus.add_node(node)
 
-        transformed_label = self._transform_label()
-        if transformed_label:
+        if self.label:
+            transformed_label = self._transform_label()
             node.set_label(transformed_label)
 
         for attrname,value in self.dot_attrs.items():

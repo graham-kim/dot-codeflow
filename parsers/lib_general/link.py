@@ -4,7 +4,7 @@ import pyparsing as pp
 
 from dataclasses import dataclass
 
-from parsers.lib_general.utils import prepend_clus_name
+from parsers.lib_general.utils import prepend_clus_name, substitute_angular_brackets_after_escaping
 
 @dataclass
 class LinkStorage:
@@ -30,7 +30,8 @@ class LinkStorage:
         return prepend_clus_name(self.clus_full_name, self.dst)
 
     def _transform_label(self) -> str:
-        return self.label
+        escaped = substitute_angular_brackets_after_escaping(self.label)
+        return f"<{escaped.strip()}>"
 
     def add_to_cluster(self) -> None:
         pre_existing = self.clus.get_edge(self.full_src, self.full_dst)
@@ -45,7 +46,7 @@ class LinkStorage:
                 self.label = self.label.replace("@3*@", "")
                 self.clus.add_edge(pd.Edge(self.full_src, self.full_dst))
                 self.clus.add_edge(pd.Edge(self.full_src, self.full_dst))
-            link.set_label(self.label)
+            link.set_label(self._transform_label())
 
         for attrname,value in self.dot_attrs.items():
             if not hasattr(link, attrname):
