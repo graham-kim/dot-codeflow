@@ -6,7 +6,7 @@ def _optional_label() -> pp.Optional:
     return pp.Optional(
               pp.Suppress("|") \
             + pp.Combine(
-                  pp.Word(pp.alphanums+'"'+"'_-=@+*\/#,.;:<>()[]!?")
+                  pp.Word(pp.alphanums+'"'+"'_-=@+*\/%#,.;:<>()[]!?")
               )[1,...]("label")
           )
 
