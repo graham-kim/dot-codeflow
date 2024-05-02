@@ -1,0 +1,27 @@
+- flow
+
+- GeneralParser | @this@\nparsers/general.py
+
+- ParserInterface | @this@\nparsers/interface.py
+
+- NodeStorage | @this@\nparsers/lib_general/node.py
+
+- MultiLinksStorage | @this@\nparsers/lib_general/link.py
+
+- patterns | @this@\nparsers/lib_general/patterns.py
+
+< flow
+<> GeneralParser
+> ParserInterface 
+> NodeStorage
+> MultiLinksStorage
+> patterns 
+
+- utils | @this@\nparsers/lib_general/utils.py
+
+< NodeStorage
+< MultiLinksStorage
+> utils
+
+
+
