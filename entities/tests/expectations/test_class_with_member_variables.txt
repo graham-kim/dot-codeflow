@@ -1,9 +1,0 @@
-    subgraph cluster_SomeActor {
-        label="class SomeActor\npath/to/actor.cc 146"
-
-        SomeActor_mem_var [shape="cylinder" label=<
-        <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
-            <TR><TD PORT="count">int count<BR/>15</TD></TR>
-            <TR><TD PORT="name">const char * name<BR/>16</TD></TR>
-        </TABLE>>]
-    }

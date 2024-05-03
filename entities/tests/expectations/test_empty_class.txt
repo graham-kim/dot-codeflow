@@ -1,3 +1,0 @@
-    subgraph cluster_SomeActor {
-        label="class SomeActor\npath/to/actor.cc 146"
-    }
