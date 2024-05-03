@@ -2,6 +2,7 @@ import typing as tp
 import argparse
 
 from parsers.general import GeneralParser
+from printers.pretty import pretty_print_with_global_attr
 
 def setup_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser()
@@ -49,33 +50,6 @@ def parse_files(filenames: tp.List[str]):
         parser.parse_file(name)
 
     return parser.get_pydot_dot()
-
-def pretty_print_with_global_attr(dot, args, ranksame_lists: tp.List[tp.List[str]]):
-    dot.write("temp.dot")
-
-    indent_level = 0
-    with open("temp.dot", "r") as inF:
-        for i,line in enumerate(inF):
-            if line.strip().endswith("}"):
-                indent_level -= 1
-                if indent_level == 0: # about to print the last '}' in the file
-                    for list in ranksame_lists:
-                        print('    {rank=same;' + ";".join(list) + '}')
-
-            if line.strip().startswith("subgraph"):
-                print("")
-
-
-            print(" "*indent_level*4 + line.strip('\n').strip('\r'))
-
-            if i == 0:
-                print(f'    rankdir={args.rankdir}')
-                print('    node [shape="box" style="filled" fillcolor="white"]')
-                if ranksame_lists:
-                    print('    newrank=true')
-
-            if line.strip().endswith("{"):
-                indent_level += 1
 
 if __name__ == '__main__':
     args = setup_parser().parse_args()
