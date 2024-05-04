@@ -5,14 +5,8 @@ from flow import setup_parser
 
 from parsers.shorthand import ShorthandParser
 
-CAT_DICT = {
-    "x": 'fillcolor="#FF9999"',
-    "o": 'fillcolor="#55FF55"',
-    ".": 'shape=oval'
-}
-
-with open('categories.json', 'w') as outF:
-    json.dump(CAT_DICT, outF, indent=4)
+with open("categories.json", 'r') as inF:
+    CAT_DICT = json.load(inF)
 
 def parse_files(filenames: tp.List[str]):
     parser = ShorthandParser()
