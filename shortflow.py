@@ -1,4 +1,5 @@
 import typing as tp
+import json
 
 from flow import setup_parser
 
@@ -9,6 +10,9 @@ CAT_DICT = {
     "o": 'fillcolor="#55FF55"',
     ".": 'shape=oval'
 }
+
+with open('categories.json', 'w') as outF:
+    json.dump(CAT_DICT, outF, indent=4)
 
 def parse_files(filenames: tp.List[str]):
     parser = ShorthandParser()
