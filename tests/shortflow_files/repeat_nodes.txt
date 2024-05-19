@@ -1,0 +1,11 @@
+< x ABC | the abc node
+> x DEF | the def node
+
+< x ABC | some abc thing
+> o GHI | the ghi node
+
+< o ABC | abc happening
+> x JKL
+
+< x GHI | the ghi node
+> x JKL | the jkl node
