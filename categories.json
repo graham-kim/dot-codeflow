@@ -1,5 +1,8 @@
 {
-    "x": "fillcolor=\"#FF9999\"",
-    "o": "fillcolor=\"#55FF55\"",
-    "?": "shape=oval fillcolor=\"#DDDDDD\""
+    "r": "fillcolor=\"#FF9999\"",
+    "g": "fillcolor=\"#55FF55\"",
+    "b": "fillcolor=\"#99CCFF\"",
+    "o": "shape=oval",
+    "h": "shape=hexagon",
+    ".": "shape=box"
 }
