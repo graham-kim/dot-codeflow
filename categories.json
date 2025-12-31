@@ -2,7 +2,14 @@
     "r": "fillcolor=\"#FF9999\"",
     "g": "fillcolor=\"#55FF55\"",
     "b": "fillcolor=\"#99CCFF\"",
+    "p": "fillcolor=\"#FFAAFF\"",
+    "y": "fillcolor=yellow,
     "o": "shape=oval",
+    "bo": "fillcolor=\"#99CCFF\" "shape=oval",
+    "go": "fillcolor=\"#55FF55\" "shape=oval",
+    "ro": "fillcolor=\"#FF9999\" "shape=oval",
+    "n": "shape=note",
+    "c": "shape=cylinder",
     "h": "shape=hexagon",
     ".": "shape=box"
 }
