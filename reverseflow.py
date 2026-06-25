@@ -68,10 +68,20 @@ def reverse_flow(dot_file: str, out_file: str) -> None:
         # nodes in cluster
         for node in clus.get_nodes():
             node_name = node.get_name()
-            lines.append(f"- {node_name}")
+            node_label = node.get_label()
+            if node_label:
+                node_label = node_label.replace('<BR/>', '\\n')
+                # the label is bracked with < and >, don't print those
+                lines.append(f"\n- {node_name} | {node_label[1:-1]}")
+            else:
+                lines.append(f"\n- {node_name}")
             node_attrs = node.get_attributes()
-            for key, value in node_attrs.items():
-                lines.append(f"= {key}={value}")
+            if len(node_attrs) > 0:
+                kv_pairs = [f"{k}={v}" for k, v in node_attrs.items() \
+                            if k != "label"]
+                if kv_pairs:
+                    kv_str = ' '.join(kv_pairs)
+                    lines.append(f"= {kv_str}")
         # subclusters
         for sub in clus.get_subgraphs():
             if isinstance(sub, pydot.Cluster):
@@ -81,7 +91,7 @@ def reverse_flow(dot_file: str, out_file: str) -> None:
         for edge in cluster_edges.get(name, []):
             src = edge.get_source()
             dst = edge.get_destination()
-            lines.append(f"< {src}")
+            lines.append(f"\n< {src}")
             lines.append(f"> {dst}")
             edge_attrs = edge.get_attributes()
             for key, value in edge_attrs.items():
