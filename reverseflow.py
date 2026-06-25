@@ -7,7 +7,7 @@ def strip_cluster_prefix(name: str) -> str:
 
 
 def reverse_flow(dot_file: str, out_file: str) -> None:
-    dot = pydot.Dot.from_dot_file(dot_file)
+    dot = pydot.graph_from_dot_file(dot_file)[0]
 
     # Map node name to cluster name (None for root)
     node_to_cluster = {}
@@ -96,7 +96,8 @@ def reverse_flow(dot_file: str, out_file: str) -> None:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("dot_file")
-    parser.add_argument("out_file")
+    parser.add_argument("dot_file", help="input .dot file")
+    parser.add_argument("out_file", help="output .txt file")
     args = parser.parse_args()
+
     reverse_flow(args.dot_file, args.out_file)
