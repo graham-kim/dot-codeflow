@@ -45,13 +45,14 @@ def reverse_flow(dot_file: str, out_file: str) -> None:
 
     lines = []
 
-    def write_cluster(name: str | None):
+    def write_cluster(name: str | None, prior_names: list[str] = []):
         if name is None:
             clus = dot
             header_written = False
         else:
             clus = cluster_objs[name]
             header_written = True
+            prior_names.append(name)
             # cluster header
             header = f"\n/@ {name}"
             label = clus.get_attributes().get("label")
@@ -68,6 +69,10 @@ def reverse_flow(dot_file: str, out_file: str) -> None:
         for node in clus.get_nodes():
             node_name = node.get_name()
             node_label = node.get_label()
+            prior_names_joined = '_'.join(prior_names)
+            if name is not None and node_name.startswith(prior_names_joined):
+                name_len_1 = len(prior_names_joined) + 1
+                node_name = node_name[name_len_1:]
             if node_label:
                 node_label = node_label.replace('<BR/>', '\\n')
                 # the label is bracked with < and >, don't print those
@@ -86,7 +91,7 @@ def reverse_flow(dot_file: str, out_file: str) -> None:
         for sub in clus.get_subgraphs():
             if isinstance(sub, pydot.core.Subgraph):
                 sub_name = strip_cluster_prefix(sub.get_name())
-                write_cluster(sub_name)
+                write_cluster(sub_name, prior_names)
 
         # edges in this cluster
         for edge in cluster_edges.get(name, []):
