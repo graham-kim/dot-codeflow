@@ -54,9 +54,7 @@ def reverse_flow(dot_file: str, out_file: str) -> None:
         if isinstance(sub, pydot.core.Subgraph):
             process_cluster(sub, None)
 
-    lines = []
-
-    def write_cluster(name: str | None, prior_names: list[str] = []):
+    def write_cluster(name: str | None, outF, prior_names: list[str] = []):
         if name is None:
             clus = dot
             header_written = False
@@ -69,12 +67,12 @@ def reverse_flow(dot_file: str, out_file: str) -> None:
             label = clus.get_attributes().get("label")
             if label:
                 header += f" | {label}"
-            lines.append(header)
+            outF.write(header+'\n')
 
             for key, value in clus.get_attributes().items():
                 if key == "label":
                     continue
-                lines.append(f"= {key}={value}")
+                outF.write(f"= {key}={value}\n")
 
         # nodes in cluster
         for node in clus.get_nodes():
@@ -87,22 +85,22 @@ def reverse_flow(dot_file: str, out_file: str) -> None:
             if node_label:
                 node_label = node_label.replace('<BR/>', '\\n')
                 # the label is bracked with < and >, don't print those
-                lines.append(f"\n- {node_name} | {node_label[1:-1]}")
+                outF.write(f"\n- {node_name} | {node_label[1:-1]}\n")
             else:
-                lines.append(f"\n- {node_name}")
+                outF.write(f"\n- {node_name}\n")
 
             # Node attributes, if any
             kv_pairs = [f"{k}={v}" for k, v in node.get_attributes().items() \
                         if k != "label"]
             if kv_pairs:
                 kv_str = ' '.join(kv_pairs)
-                lines.append(f"= {kv_str}")
+                outF.write(f"= {kv_str}\n")
 
         # subclusters
         for sub in clus.get_subgraphs():
             if isinstance(sub, pydot.core.Subgraph):
                 sub_name = strip_cluster_prefix(sub.get_name())
-                write_cluster(sub_name, prior_names)
+                write_cluster(sub_name, outF, prior_names)
 
         # edges in this cluster
         for edge in cluster_edges.get(name, []):
@@ -114,17 +112,16 @@ def reverse_flow(dot_file: str, out_file: str) -> None:
                 src = src[name_len_1:]
                 dst = dst[name_len_1:]
 
-            lines.append(f"\n< {src}")
-            lines.append(f"> {dst}")
+            outF.write(f"\n< {src}\n")
+            outF.write(f"> {dst}\n")
             for key, value in edge.get_attributes().items():
-                lines.append(f"= {key}={value}")
+                outF.write(f"= {key}={value}\n")
 
         if name is not None:
-            lines.append("\n@/")
+            outF.write("\n@/\n")
 
-    write_cluster(None)
-    with open(out_file, "w") as f:
-        f.write("\n".join(lines))
+    with open(out_file, "w") as outF:
+        write_cluster(None, outF)
 
 
 if __name__ == "__main__":
