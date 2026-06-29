@@ -13,12 +13,25 @@ def reverse_flow(dot_file: str, out_file: str) -> None:
     node_to_cluster = {}
     # Map cluster name to cluster object
     cluster_objs = {}
+    cluster_edges = {None: []}
 
     def process_cluster(clus: pydot.core.Subgraph, parent_name: str | None):
         name = strip_cluster_prefix(clus.get_name())
+        cluster_edges[name] = []
         cluster_objs[name] = clus
         for node in clus.get_nodes():
             node_to_cluster[node.get_name()] = name
+
+        for edge in clus.get_edges():
+            src = edge.get_source()
+            dst = edge.get_destination()
+            src_cluster = node_to_cluster.get(src)
+            dst_cluster = node_to_cluster.get(dst)
+            if src_cluster == dst_cluster:
+                cluster_edges[src_cluster].append(edge)
+            else:
+                cluster_edges[name].append(edge)
+
         for sub in clus.get_subgraphs():
             if isinstance(sub, pydot.core.Subgraph):
                 process_cluster(sub, name)
@@ -26,13 +39,7 @@ def reverse_flow(dot_file: str, out_file: str) -> None:
     # Process root cluster
     for node in dot.get_nodes():
         node_to_cluster[node.get_name()] = None
-    for sub in dot.get_subgraphs():
-        if isinstance(sub, pydot.core.Subgraph):
-            process_cluster(sub, None)
 
-    # Group edges by cluster
-    cluster_edges = {name: [] for name in cluster_objs}
-    cluster_edges[None] = []
     for edge in dot.get_edges():
         src = edge.get_source()
         dst = edge.get_destination()
@@ -42,6 +49,10 @@ def reverse_flow(dot_file: str, out_file: str) -> None:
             cluster_edges[src_cluster].append(edge)
         else:
             cluster_edges[None].append(edge)
+
+    for sub in dot.get_subgraphs():
+        if isinstance(sub, pydot.core.Subgraph):
+            process_cluster(sub, None)
 
     lines = []
 
@@ -97,6 +108,12 @@ def reverse_flow(dot_file: str, out_file: str) -> None:
         for edge in cluster_edges.get(name, []):
             src = edge.get_source()
             dst = edge.get_destination()
+
+            if name is not None and src.startswith(prior_names_joined) and dst.startswith(prior_names_joined):
+                name_len_1 = len(prior_names_joined) + 1
+                src = src[name_len_1:]
+                dst = dst[name_len_1:]
+
             lines.append(f"\n< {src}")
             lines.append(f"> {dst}")
             for key, value in edge.get_attributes().items():
