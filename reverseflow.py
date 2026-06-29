@@ -77,6 +77,8 @@ def reverse_flow(dot_file: str, out_file: str) -> None:
         # nodes in cluster
         for node in clus.get_nodes():
             node_name = node.get_name()
+            if name is None and node_name == "node":
+                continue
             node_label = node.get_label()
             prior_names_joined = '_'.join(prior_names)
             if name is not None and node_name.startswith(prior_names_joined):
