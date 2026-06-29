@@ -58,13 +58,12 @@ def reverse_flow(dot_file: str, out_file: str) -> None:
             if label:
                 header += f" | {label}"
             lines.append(header)
-        # cluster attributes (excluding label)
-        attrs = clus.get_attributes()
-        if name is not None:
-            for key, value in attrs.items():
+
+            for key, value in clus.get_attributes().items():
                 if key == "label":
                     continue
                 lines.append(f"= {key}={value}")
+
         # nodes in cluster
         for node in clus.get_nodes():
             node_name = node.get_name()
@@ -75,27 +74,29 @@ def reverse_flow(dot_file: str, out_file: str) -> None:
                 lines.append(f"\n- {node_name} | {node_label[1:-1]}")
             else:
                 lines.append(f"\n- {node_name}")
-            node_attrs = node.get_attributes()
-            if len(node_attrs) > 0:
-                kv_pairs = [f"{k}={v}" for k, v in node_attrs.items() \
-                            if k != "label"]
-                if kv_pairs:
-                    kv_str = ' '.join(kv_pairs)
-                    lines.append(f"= {kv_str}")
+
+            # Node attributes, if any
+            kv_pairs = [f"{k}={v}" for k, v in node.get_attributes().items() \
+                        if k != "label"]
+            if kv_pairs:
+                kv_str = ' '.join(kv_pairs)
+                lines.append(f"= {kv_str}")
+
         # subclusters
         for sub in clus.get_subgraphs():
             if isinstance(sub, pydot.core.Subgraph):
                 sub_name = strip_cluster_prefix(sub.get_name())
                 write_cluster(sub_name)
+
         # edges in this cluster
         for edge in cluster_edges.get(name, []):
             src = edge.get_source()
             dst = edge.get_destination()
             lines.append(f"\n< {src}")
             lines.append(f"> {dst}")
-            edge_attrs = edge.get_attributes()
-            for key, value in edge_attrs.items():
+            for key, value in edge.get_attributes().items():
                 lines.append(f"= {key}={value}")
+
         if name is not None:
             lines.append("\n@/")
 
