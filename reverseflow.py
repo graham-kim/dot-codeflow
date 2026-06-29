@@ -14,20 +14,20 @@ def reverse_flow(dot_file: str, out_file: str) -> None:
     # Map cluster name to cluster object
     cluster_objs = {}
 
-    def process_cluster(clus: pydot.Cluster, parent_name: str | None):
+    def process_cluster(clus: pydot.core.Subgraph, parent_name: str | None):
         name = strip_cluster_prefix(clus.get_name())
         cluster_objs[name] = clus
         for node in clus.get_nodes():
             node_to_cluster[node.get_name()] = name
         for sub in clus.get_subgraphs():
-            if isinstance(sub, pydot.Cluster):
+            if isinstance(sub, pydot.core.Subgraph):
                 process_cluster(sub, name)
 
     # Process root cluster
     for node in dot.get_nodes():
         node_to_cluster[node.get_name()] = None
     for sub in dot.get_subgraphs():
-        if isinstance(sub, pydot.Cluster):
+        if isinstance(sub, pydot.core.Subgraph):
             process_cluster(sub, None)
 
     # Group edges by cluster
@@ -53,7 +53,7 @@ def reverse_flow(dot_file: str, out_file: str) -> None:
             clus = cluster_objs[name]
             header_written = True
             # cluster header
-            header = f"/@ {name}"
+            header = f"\n/@ {name}"
             label = clus.get_attributes().get("label")
             if label:
                 header += f" | {label}"
@@ -84,7 +84,7 @@ def reverse_flow(dot_file: str, out_file: str) -> None:
                     lines.append(f"= {kv_str}")
         # subclusters
         for sub in clus.get_subgraphs():
-            if isinstance(sub, pydot.Cluster):
+            if isinstance(sub, pydot.core.Subgraph):
                 sub_name = strip_cluster_prefix(sub.get_name())
                 write_cluster(sub_name)
         # edges in this cluster
@@ -97,7 +97,7 @@ def reverse_flow(dot_file: str, out_file: str) -> None:
             for key, value in edge_attrs.items():
                 lines.append(f"= {key}={value}")
         if name is not None:
-            lines.append("@/")
+            lines.append("\n@/")
 
     write_cluster(None)
     with open(out_file, "w") as f:
